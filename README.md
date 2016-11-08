@@ -31,6 +31,7 @@ You can also install the **development** version from
 ```s
 # install.packages("devtools")
 devtools::install_github("ceweiss/GeomComb")
+```
 
 ## License
 
