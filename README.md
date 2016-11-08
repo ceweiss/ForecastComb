@@ -1,5 +1,5 @@
 # GeomComb
-(Geometric) Forecast Combination in R
+>(Geometric) Forecast Combination in R
 
 The R package *GeomComb* presents functions to pool individual model forecasts
 using geometric (eigenvector-based) forecast combination methods. The package
