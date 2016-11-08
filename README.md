@@ -9,8 +9,11 @@ option of a criterion-based optimisation of the trimming factor) and
 regression-based forecast combination methods.
 
 The forecast combination methods allow for 3 different input types:
+
 1) Only training set
+
 2) Training set + future forecasts
+
 3) Full training + test set
 
 Accuracy measures are provided accordingly, summary and plot functions have
