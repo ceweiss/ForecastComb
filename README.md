@@ -39,7 +39,5 @@ devtools::install_github("ceweiss/GeomComb")
 ## License
 
 This package is free and open source software, licensed under GPL (>= 2).
-hhhhh
-
 
 
