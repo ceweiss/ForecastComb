@@ -1,5 +1,6 @@
 # GeomComb
 >(Geometric) Forecast Combination in R
+
 (written by Chris E. Weiss and Gernot Roetzer)
 
 The R package *GeomComb* presents functions to pool individual model forecasts
