@@ -1,15 +1,19 @@
 
-summary.foreccomb_res<-function(x){
+summary.foreccomb_res<-function(x, plot=TRUE){
   if(class(x)!="foreccomb_res") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
   
   ans <- list()
   
   ans$Method<-x$Method
   
-  ans$weight<-matrix(x$Weights, ncol=1)
-  colnames(ans$weight)<-"Combination Weight"
-  rownames(ans$weight)<-x$Models
-  
+  if(!is.character(x$Weights)) {
+    ans$weight<-matrix(x$Weights, ncol=1)
+    colnames(ans$weight)<-"Combination Weight"
+    rownames(ans$weight)<-x$Models
+  } else {
+    ans$weight<-"Weights of the individual forecasts differ over time with trimmed mean"
+  }
+
   ans$Intercept<-x$Intercept
   
   ans$accuracy<-rbind(x$Accuracy_Train[1:5], x$Accuracy_Test)
@@ -17,7 +21,11 @@ summary.foreccomb_res<-function(x){
   
   ans<-append(ans, subset(x, !(names(x) %in% c("Method", "Weights", "Intercept", "Accuracy_Train", "Accuracy_Test"))))
   
-  class(ans) <- "foreccomb_res_summary"
+  if(plot==TRUE){
+    plot(x)
+  }
+  
+  class(ans) <- c("foreccomb_res_summary")
   return(ans)
 }
 
@@ -31,8 +39,13 @@ print.foreccomb_res_summary <- function(x, plot=TRUE) {
   cat("Method: ", x$Method, "\n")
   cat("\n")
   cat("Individual Forecasts & Combination Weights: \n")
-  cat("\n")
-  print(x$weight)
+  if(!is.character(x$weight)) {
+    cat("\n")
+    print(x$weight)
+  } else {
+    cat(x$weight)
+    cat("\n")
+  }
   cat("\n")
   if (!is.null(x$Intercept)){
     cat("Intercept (Bias-Correction): ", x$Intercept, "\n")
@@ -50,6 +63,12 @@ print.foreccomb_res_summary <- function(x, plot=TRUE) {
   cat("See ", paste0("str(", deparse(substitute(x)), ")"), " for full list.")
   
   if(plot==TRUE){
-    plot(x)
+    plot.foreccomb_res_summary(x)
   }
+}
+
+plot.foreccomb_res_summary <- function(x) {
+  if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
+  class(x)<-"foreccomb_res"
+  plot(x)
 }
