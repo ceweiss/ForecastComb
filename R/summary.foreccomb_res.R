@@ -18,13 +18,8 @@
 #'
 #' @return Returns an object of class 'foreccomb_res'
 #' \itemize{
-#' \item Method Returns the used forecast combination method.
-#' \item Models Returns the individual input models that were used for the forecast combinations.
-#' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
-#' \item Fitted Returns the fitted values of the combination method for the training set.
-#' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-#' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-#' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' \item x bla
+#' \item ... bla
 #' }
 #' @examples
 #' obs <- rnorm(100)
@@ -51,7 +46,7 @@
 #' @import forecast
 #' 
 #' @export
-summary.foreccomb_res<-function(x, plot=TRUE){
+summary.foreccomb_res<-function(x, ...){
   if(class(x)!="foreccomb_res") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
   
   ans <- list()
@@ -77,16 +72,11 @@ summary.foreccomb_res<-function(x, plot=TRUE){
   
   class(ans) <- c("foreccomb_res_summary")
   
-  if(plot==TRUE){
-    p<-plot(ans)
-  }
-  
-  ans$plot<-p
-  
   return(ans)
 }
 
-print.foreccomb_res_summary <- function(x, plot=TRUE) {
+#' @export
+print.foreccomb_res_summary <- function(x, ...) {
   if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
   
   cat("\n")
@@ -118,14 +108,5 @@ print.foreccomb_res_summary <- function(x, plot=TRUE) {
     cat("For forecasts (test set): ", paste0(x$data, "$Forecasts_Test"), "\n")
   }
   cat("See ", paste0("str(", x$data, ")"), " for full list.")
-  
-  if(plot==TRUE){
-    print(x$plot)
-  }
 }
 
-plot.foreccomb_res_summary <- function(x) {
-  if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
-  class(x)<-"foreccomb_res"
-  plot(x)
-}

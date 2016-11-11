@@ -4,7 +4,7 @@
 \alias{summary.foreccomb_res}
 \title{PLACEHOLDER for summary.foreccomb_res}
 \usage{
-\method{summary}{foreccomb_res}(x, plot = TRUE)
+\method{summary}{foreccomb_res}(x, ...)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
@@ -12,13 +12,8 @@
 \value{
 Returns an object of class 'foreccomb_res'
 \itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+\item x bla
+\item ... bla
 }
 }
 \description{
