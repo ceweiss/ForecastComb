@@ -1,29 +1,56 @@
-#Trimmed Mean-Corrected Eigenvector Approach:
-comp.EIG4 <- function(observed_vector, prediction_matrix, n_top_predictors) {
-  sum_sq_error <- colSums((observed_vector - prediction_matrix)^2)
-  ranking <- rank(sum_sq_error)
-  filter_vec <- ranking <= n_top_predictors
-  adj_prediction_matrix <- as.matrix(prediction_matrix[, filter_vec])
-  mean_obs <- mean(observed_vector)
-  mean_preds <- colMeans(adj_prediction_matrix)
-  centered_obs <- observed_vector - mean_obs
-  centered_preds <- scale(adj_prediction_matrix, scale=FALSE)
-  omega_matrix <- t(centered_obs - centered_preds)%*%(centered_obs - centered_preds)/length(observed_vector)
-  eigen_decomp <- eigen(omega_matrix)
-  ds <- colSums(eigen_decomp$vectors)
-  adj_eigen_vals <- eigen_decomp$values/(ds^2)
-  min_idx <- which.min(adj_eigen_vals)
-  
-  weights <- numeric(length(ranking))
-  weights[filter_vec] <- eigen_decomp$vectors[, min_idx]/ds[min_idx]
-  intercept <- mean_obs - t(mean_preds)%*%weights[filter_vec]
-  ranking <- ranking
-  fitted <- as.vector(as.vector(intercept)+prediction_matrix%*%weights)
-  accuracy_insample<-accuracy(fitted,observed_vector)
-  
-  return(list(intercept = intercept, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample, ranking = ranking))
-}
-
+#' PLACEHOLDER for ev_comb_EIG4
+#'
+#' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#'
+#' @details
+#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix 
+#' as follows: Suppose \eqn{y_t} is a variable of interest, there are N not perfectly collinear predictors, 
+#' \eqn{\bold{f}_t = (f_{1t}, \ldots, f_{Nt})'}, \eqn{\Sigma} is the (positive definite) 
+#' mean squared prediction error matrix of \eqn{\bold{f}_t} and \eqn{\bold{e}} is an \eqn{N \times 1}{N * 1} vector of \eqn{(1,\ldots,1)'}. 
+#' The N positive eigenvalues are then arranged in increasing order \eqn{(\Phi_1 = \Phi_{min}, \Phi_2, \ldots, \Phi_N)}, and \eqn{\bold{w^j}} 
+#' is defined as the eigenvector corresponding to \eqn{\Phi_j}. The combination weights \eqn{\bold{w} = (w_1,\ldots,w_N)'} are then 
+#' chosen corresponding to the minimum of \eqn{\left{ \frac{\Phi_1}{d_1^2}, \frac{\Phi_2}{d_2^2},\ldots,\frac{\Phi_N}{d_N^2}\right}}, 
+#' denoted as \eqn{\bold{w}^l}, where \eqn{d_j = \bold{e}'\bold{w}^j}, as:
+#' \deqn{\bold{w}^{EIG1} = \frac{1}{d_l} \bold{w}^l}
+#' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+#'
+#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#'
+#' @return Returns an object of class 'foreccomb_res'
+#' \itemize{
+#' \item Method Returns the used forecast combination method.
+#' \item Models Returns the individual input models that were used for the forecast combinations.
+#' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
+#' \item Fitted Returns the fitted values of the combination method for the training set.
+#' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
+#' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
+#' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' }
+#' @examples
+#' obs <- rnorm(100)
+#' preds <- matrix(rnorm(1000, 1), 100, 10)
+#' train_o<-obs[1:80]
+#' train_p<-preds[1:80,]
+#' test_o<-obs[81:100]
+#' test_p<-preds[81:100,]
+#' 
+#' data<-foreccomb(train_o, train_p, test_o, test_p)
+#' ev_comb_EIG1(data)
+#' 
+#' @seealso
+#' \code{\link[GeomComb2]{foreccomb}},
+#' \code{\link[GeomComb2]{plot.foreccomb_res}},
+#' \code{\link[GeomComb2]{summary.foreccomb_res}},
+#' \code{\link[forecast]{accuracy}}
+#' 
+#' @references 
+#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+#'
+#' @keywords ts
+#' 
+#' @import forecast
+#' 
+#' @export
 ev_comb_EIG4 <- function(x, n_top_predictors=NULL, criterion=NULL) {
   pckg<-c("forecast")
   temp<-unlist(lapply(pckg, require, character.only=TRUE))
@@ -104,4 +131,29 @@ ev_comb_EIG4 <- function(x, n_top_predictors=NULL, criterion=NULL) {
     }
   }
   return(result)
+}
+
+comp.EIG4 <- function(observed_vector, prediction_matrix, n_top_predictors) {
+  sum_sq_error <- colSums((observed_vector - prediction_matrix)^2)
+  ranking <- rank(sum_sq_error)
+  filter_vec <- ranking <= n_top_predictors
+  adj_prediction_matrix <- as.matrix(prediction_matrix[, filter_vec])
+  mean_obs <- mean(observed_vector)
+  mean_preds <- colMeans(adj_prediction_matrix)
+  centered_obs <- observed_vector - mean_obs
+  centered_preds <- scale(adj_prediction_matrix, scale=FALSE)
+  omega_matrix <- t(centered_obs - centered_preds)%*%(centered_obs - centered_preds)/length(observed_vector)
+  eigen_decomp <- eigen(omega_matrix)
+  ds <- colSums(eigen_decomp$vectors)
+  adj_eigen_vals <- eigen_decomp$values/(ds^2)
+  min_idx <- which.min(adj_eigen_vals)
+  
+  weights <- numeric(length(ranking))
+  weights[filter_vec] <- eigen_decomp$vectors[, min_idx]/ds[min_idx]
+  intercept <- mean_obs - t(mean_preds)%*%weights[filter_vec]
+  ranking <- ranking
+  fitted <- as.vector(as.vector(intercept)+prediction_matrix%*%weights)
+  accuracy_insample<-accuracy(fitted,observed_vector)
+  
+  return(list(intercept = intercept, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample, ranking = ranking))
 }

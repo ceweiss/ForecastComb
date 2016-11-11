@@ -1,10 +1,53 @@
-#Bias-Corrected Eigenvector Approach:
-
+#' Bias-Corrected Eigenvector Forecast Combination
+#'
+#' Computes forecast combination weights according to the bias-corrected eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#' 
+#' @details
+#' The bias-corrected eigenvector approach builds on the idea that if some of the predictive models yield biased predictions, 
+#' the accuracy of the standard eigenvector approach can be improved by eliminating the bias. In contrast to the standard 
+#' eigenvector approach, the eigenvectors for retrieving combination weights are now based on the covariance matrix of the 
+#' underlying model forecasts, rather than the mean-squared prediction error matrix. For a derivation, see Hsiao and Wan (2014), p. 297.
+#' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+#'
+#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#'
+#' @return Returns an object of class 'foreccomb_res'
+#' \itemize{
+#' \item Method Returns the used forecast combination method.
+#' \item Models Returns the individual input models that were used for the forecast combinations.
+#' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
+#' \item Intercept Returns the intercept (bias correction). Only if the underlying predictive models all yield unbiased predictions, this term would be zero.
+#' \item Fitted Returns the fitted values of the combination method for the training set.
+#' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
+#' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
+#' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' }
+#' @examples
+#' obs <- rnorm(100)
+#' preds <- matrix(rnorm(1000, 1), 100, 10)
+#' train_o<-obs[1:80]
+#' train_p<-preds[1:80,]
+#' test_o<-obs[81:100]
+#' test_p<-preds[81:100,]
+#' 
+#' data<-foreccomb(train_o, train_p, test_o, test_p)
+#' ev_comb_EIG2(data)
+#' 
+#' @seealso
+#' \code{\link[GeomComb2]{foreccomb}},
+#' \code{\link[GeomComb2]{plot.foreccomb_res}},
+#' \code{\link[GeomComb2]{summary.foreccomb_res}},
+#' \code{\link[forecast]{accuracy}}
+#' 
+#' @references 
+#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+#' 
+#' @keywords ts
+#' 
+#' @import forecast
+#' 
+#' @export
 ev_comb_EIG2 <- function(x) {
-  pckg<-c("forecast")
-  temp<-unlist(lapply(pckg, require, character.only=TRUE))
-  if (!all(temp==1)) stop("This function requires package \"forecast\".\n Use install.packages(\"forecast\") if it is not yet installed.\n", call.=FALSE)
-  
   if(class(x)!="foreccomb") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
   observed_vector<-x$Actual_Train
   prediction_matrix<-x$Forecasts_Train

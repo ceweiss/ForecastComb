@@ -1,20 +1,69 @@
-imp.values<-function(prediction_matrix, newpreds) {
-  nobs<-nrow(prediction_matrix)
-  whole_data<-rbind(prediction_matrix, newpreds) 
-  imp_data<-as.matrix(mnimput(~.,as.data.frame(whole_data),eps=1e-3,ts=TRUE, method="spline")$filled.dataset)
-  prediction_matrix<-imp_data[1:nobs,]
-  if(!is.null(newpreds)) {
-    newpreds<-imp_data[(nobs+1):nrow(imp_data),]
-  }
-  return(list(prediction_matrix=prediction_matrix, newpreds=newpreds))
-}
-
+#' Create Forecast Combination Input Data
+#'
+#' Structures cross-sectional input data (individual model forecasts) for forecast combination. Stores data as S3 class 'foreccomb' that is passed on to the geometric forecast combination techniques.
+#' 
+#' @details
+#' The function imports the column names of the prediction matrix (if byrow = FALSE, otherwise the row names) as model names; #
+#' if no column names are specified, generic model names are created. 
+#'
+#' @param observed_vector A vector or univariate time series; contains 'actual values' for training set.
+#' @param prediction_matrix A matrix or multivariate time series; contains individual model forecasts for training set.
+#' @param newobs A vector or univariate time series; contains 'actual values' if a test set is used.
+#' @param newpreds A matrix or multivariate time series; contains individual model forecasts if a test set is used. Does not
+#' require specification of 'newobs' -- in the case in which a forecaster only wants to train the forecast combination method
+#' with a training set and apply it to future individual model forecasts, only 'newpreds' is required, not 'newobs'.
+#' @param byrow logical. The default (FALSE) assumes that each column of the forecast matrices ('prediction_matrix' and -- if
+#' specified -- 'newpreds') contains forecasts from one forecast model; if each row of the matrices contains forecasts from
+#' one forecast model, set to TRUE.
+#' @param na.impute logical. The default (TRUE) behavior is to impute missing values via the cross-validated spline approach of
+#' the mtsdi package. If set to FALSE, forecasts with missing values will be removed. Missing values in the observed data are never
+#' imputed
+#' 
+#' @return Returns an object of class 'foreccomb'
+#' \itemize{
+#'  \item Actual_Train Actual Values (Training Set).
+#'  \item Forecasts_Train Retained (non-missing) cross-section of individual model forecasts (Training Set).
+#'  \item Actual_Test Actual Values (Test Set). If 'newobs' was provided.
+#'  \item Forecasts_Test Retained (non-missing) cross-section of individual model forecasts (Test Set). If 'newpreds' was provided.
+#'  \item nmodels Number of retained (non-missing) individual model forecasts.
+#'  \item modelnames Model Names of the retained individual forecast models -- either provided or generic names are created (see above).
+#' }
+#' 
+#' @examples
+#' obs <- rnorm(100)
+#' preds <- matrix(rnorm(1000, 1), 100, 10)
+#' train_o<-obs[1:80]
+#' train_p<-preds[1:80,]
+#' test_o<-obs[81:100]
+#' test_p<-preds[81:100,]
+#' 
+#' ## Example with a training set only:
+#' foreccomb(train_o, train_p)
+#' 
+#' ## Example with a training set and future individual forecasts:
+#' foreccomb(train_o, train_p, newpreds=test_p)
+#' 
+#' ## Example with a training set and a full test set:
+#' foreccomb(train_o, train_p, test_o, test_p)
+#' 
+#' ## Example with individual forecast models being stored in rows:
+#' preds <- matrix(rnorm(1000, 1), 10, 100)
+#' train_p <- preds[,1:80]
+#' foreccomb(train_o, train_p, byrow = TRUE)
+#' 
+#' @seealso
+#' ~~objects to See Also as \code{\link{help}}, ~~~
+#' 
+#' @references 
+#'  ~put references to the literature/web site here ~
+#' 
+#' @keywords ts
+#' 
+#' @import mtsdi
+#' 
+#' @export
 foreccomb <- function (observed_vector, prediction_matrix, newobs=NULL, newpreds=NULL, byrow=FALSE, na.impute=TRUE)
 {
-  pckg<-c("mtsdi")
-  temp<-unlist(lapply(pckg, require, character.only=TRUE))
-  if (!all(temp==1)) stop("This function requires packages \"mtsdi\".\n Use install.packages() if it is not yet installed.\n", call.=FALSE) 
-  
   if(is.null(observed_vector)) stop("Training set must contain vector of actual values.", call.=FALSE)
   if(!is.null(dim(observed_vector)) && sum(dim(observed_vector)>1)>1) stop("The input for 'observed vector' appears to be multidimensional. Training set requires a vector of actual values.", call.=FALSE)
   if(!is.numeric(observed_vector)) stop("Actual observations (Training Set) are not numeric.", call.=FALSE)
@@ -114,4 +163,15 @@ foreccomb <- function (observed_vector, prediction_matrix, newobs=NULL, newpreds
     }
   }
   return(output)
+}
+
+imp.values<-function(prediction_matrix, newpreds) {
+  nobs<-nrow(prediction_matrix)
+  whole_data<-rbind(prediction_matrix, newpreds) 
+  imp_data<-as.matrix(mnimput(~.,as.data.frame(whole_data),eps=1e-3,ts=TRUE, method="spline")$filled.dataset)
+  prediction_matrix<-imp_data[1:nobs,]
+  if(!is.null(newpreds)) {
+    newpreds<-imp_data[(nobs+1):nrow(imp_data),]
+  }
+  return(list(prediction_matrix=prediction_matrix, newpreds=newpreds))
 }
