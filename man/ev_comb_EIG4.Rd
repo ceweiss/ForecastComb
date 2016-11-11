@@ -8,6 +8,10 @@ ev_comb_EIG4(x, n_top_predictors = NULL, criterion = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{n_top_predictors}{Specifies the top number of predictors being used for the eigenvector-based combination.}
+
+\item{criterion}{If no n_top_predictors is specified, an optimization criterion for automatized specification of the number of top predictors is needed.}
 }
 \value{
 Returns an object of class 'foreccomb_res'

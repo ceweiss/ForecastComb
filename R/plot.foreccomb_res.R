@@ -15,11 +15,10 @@
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param ... Additional parameters.
 #'
-#' @return Returns an object of class 'foreccomb_res'
-#' \itemize{
-#' \item x bla
-#' }
+#' @return A diagram for the foreccomb_res class.
+#' 
 #' @examples
 #' obs <- rnorm(100)
 #' preds <- matrix(rnorm(1000, 1), 100, 10)

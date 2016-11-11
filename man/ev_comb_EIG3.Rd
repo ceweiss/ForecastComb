@@ -8,6 +8,10 @@ ev_comb_EIG3(x, n_top_predictors = NULL, criterion = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{n_top_predictors}{Specifies the top number of predictors being used for the eigenvector-based combination.}
+
+\item{criterion}{If no n_top_predictors is specified, an optimization criterion for automatized specification of the number of top predictors is needed.}
 }
 \value{
 Returns an object of class 'foreccomb_res'
@@ -45,7 +49,7 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+ev_comb_EIG3(data, n_top_predictors=2)
 
 }
 \references{

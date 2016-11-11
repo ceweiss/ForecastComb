@@ -8,6 +8,10 @@ auto.combine(x, criterion, param_list = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{criterion}{Specifies optimization criterion. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.}
+
+\item{param_list}{Can contain additional parameters for the different combination methods.}
 }
 \value{
 Returns an object of class 'foreccomb_res'

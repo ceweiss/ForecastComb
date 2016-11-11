@@ -8,6 +8,10 @@ comb_TA(x, trim_factor = NULL, criterion = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{trim_factor}{Trim factor to be used.}
+
+\item{criterion}{If no trim factor is specified, an optimization criterion for automatized trimming needs to be defined.}
 }
 \value{
 Returns an object of class 'foreccomb_res'

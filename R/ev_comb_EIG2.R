@@ -22,6 +22,7 @@
 #' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
 #' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
 #' }
+#' 
 #' @examples
 #' obs <- rnorm(100)
 #' preds <- matrix(rnorm(1000, 1), 100, 10)

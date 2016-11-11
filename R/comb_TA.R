@@ -15,6 +15,8 @@
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param trim_factor Trim factor to be used.
+#' @param criterion If no trim factor is specified, an optimization criterion for automatized trimming needs to be defined.
 #'
 #' @return Returns an object of class 'foreccomb_res'
 #' \itemize{
@@ -26,6 +28,7 @@
 #' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
 #' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
 #' }
+#' 
 #' @examples
 #' obs <- rnorm(100)
 #' preds <- matrix(rnorm(1000, 1), 100, 10)

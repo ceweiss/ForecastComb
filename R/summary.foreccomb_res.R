@@ -16,11 +16,16 @@
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #'
-#' @return Returns an object of class 'foreccomb_res'
+#' @return PLACEHOLDER Returns an object of class 'summary.foreccomb_res'
 #' \itemize{
-#' \item x bla
-#' \item ... bla
+#'  \item Actual_Train Actual Values (Training Set).
+#'  \item Forecasts_Train Retained (non-missing) cross-section of individual model forecasts (Training Set).
+#'  \item Actual_Test Actual Values (Test Set). If 'newobs' was provided.
+#'  \item Forecasts_Test Retained (non-missing) cross-section of individual model forecasts (Test Set). If 'newpreds' was provided.
+#'  \item nmodels Number of retained (non-missing) individual model forecasts.
+#'  \item modelnames Model Names of the retained individual forecast models -- either provided or generic names are created (see above).
 #' }
+#' 
 #' @examples
 #' obs <- rnorm(100)
 #' preds <- matrix(rnorm(1000, 1), 100, 10)
@@ -75,6 +80,26 @@ summary.foreccomb_res<-function(x, ...){
   return(ans)
 }
 
+#' PLACEHOLDER for print.foreccomb_res_summary
+#'
+#' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#'
+#' @details
+#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix 
+#' as follows: Suppose \eqn{y_t} is a variable of interest, there are N not perfectly collinear predictors, 
+#' \eqn{\bold{f}_t = (f_{1t}, \ldots, f_{Nt})'}, \eqn{\Sigma} is the (positive definite) 
+#' mean squared prediction error matrix of \eqn{\bold{f}_t} and \eqn{\bold{e}} is an \eqn{N \times 1}{N * 1} vector of \eqn{(1,\ldots,1)'}. 
+#' The N positive eigenvalues are then arranged in increasing order \eqn{(\Phi_1 = \Phi_{min}, \Phi_2, \ldots, \Phi_N)}, and \eqn{\bold{w^j}} 
+#' is defined as the eigenvector corresponding to \eqn{\Phi_j}. The combination weights \eqn{\bold{w} = (w_1,\ldots,w_N)'} are then 
+#' chosen corresponding to the minimum of \eqn{\left{ \frac{\Phi_1}{d_1^2}, \frac{\Phi_2}{d_2^2},\ldots,\frac{\Phi_N}{d_N^2}\right}}, 
+#' denoted as \eqn{\bold{w}^l}, where \eqn{d_j = \bold{e}'\bold{w}^j}, as:
+#' \deqn{\bold{w}^{EIG1} = \frac{1}{d_l} \bold{w}^l}
+#' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+#'
+#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' 
+#' @return Returns formatted output of the foreccomb_res_summary object
+#' 
 #' @export
 print.foreccomb_res_summary <- function(x, ...) {
   if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)

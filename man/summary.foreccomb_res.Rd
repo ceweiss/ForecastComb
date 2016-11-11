@@ -10,10 +10,14 @@
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
+PLACEHOLDER Returns an object of class 'summary.foreccomb_res'
 \itemize{
-\item x bla
-\item ... bla
+ \item Actual_Train Actual Values (Training Set).
+ \item Forecasts_Train Retained (non-missing) cross-section of individual model forecasts (Training Set).
+ \item Actual_Test Actual Values (Test Set). If 'newobs' was provided.
+ \item Forecasts_Test Retained (non-missing) cross-section of individual model forecasts (Test Set). If 'newpreds' was provided.
+ \item nmodels Number of retained (non-missing) individual model forecasts.
+ \item modelnames Model Names of the retained individual forecast models -- either provided or generic names are created (see above).
 }
 }
 \description{

@@ -15,6 +15,8 @@
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param n_top_predictors Specifies the top number of predictors being used for the eigenvector-based combination.
+#' @param criterion If no n_top_predictors is specified, an optimization criterion for automatized specification of the number of top predictors is needed. 
 #'
 #' @return Returns an object of class 'foreccomb_res'
 #' \itemize{
@@ -35,7 +37,7 @@
 #' test_p<-preds[81:100,]
 #' 
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG1(data)
+#' ev_comb_EIG3(data, n_top_predictors=2)
 #' 
 #' @seealso
 #' \code{\link[GeomComb2]{foreccomb}},

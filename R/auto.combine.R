@@ -15,6 +15,8 @@
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param criterion Specifies optimization criterion. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.
+#' @param param_list Can contain additional parameters for the different combination methods.
 #'
 #' @return Returns an object of class 'foreccomb_res'
 #' \itemize{
@@ -47,11 +49,11 @@
 #' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 #'
 #' @keywords ts
+#' 
+#' @import forecast
 #'
 #' @export
 auto.combine <- function(x, criterion, param_list=NULL) {
-  if(class(x)!="foreccomb") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
-  
   if(is.null(criterion) || !(criterion %in% c("RMSE", "MAE", "MAPE")))
     stop("Valid optimization criterion is needed. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.", call.=FALSE)
   

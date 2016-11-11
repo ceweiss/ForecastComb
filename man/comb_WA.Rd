@@ -8,6 +8,10 @@ comb_WA(x, trim_factor = NULL, criterion = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{trim_factor}{Trim factor to be used.}
+
+\item{criterion}{If no trim factor is specified, an optimization criterion for automatized trimming needs to be defined.}
 }
 \value{
 Returns an object of class 'foreccomb_res'
@@ -45,7 +49,7 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+comb_WA(data, trim_factor=0.3)
 
 }
 \references{
