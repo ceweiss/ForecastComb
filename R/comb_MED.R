@@ -1,4 +1,4 @@
-#' PLACEHOLDER for auto.combine
+#' PLACEHOLDER for comb_MED
 #'
 #' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
 #'
@@ -47,72 +47,48 @@
 #' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 #'
 #' @keywords ts
-#'
+#' 
+#' @import forecast
+#' 
 #' @export
-auto.combine <- function(x, criterion, param_list=NULL) {
-  if(class(x)!="foreccomb") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
+comb_MED <- function(x) {
+  pckg <- c("forecast")
+  temp <- unlist(lapply(pckg, require, character.only = TRUE))
+  if (!all(temp == 1)) 
+    stop("This function requires package \"forecast\".\n Use install.packages(\"forecast\") if it is not yet installed.\n", call. = FALSE)
   
-  if(is.null(criterion) || !(criterion %in% c("RMSE", "MAE", "MAPE")))
-    stop("Valid optimization criterion is needed. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.", call.=FALSE)
+  if (class(x) != "foreccomb") 
+    stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
+  observed_vector <- x$Actual_Train
+  prediction_matrix <- x$Forecasts_Train
+  modelnames <- x$modelnames
   
-  if(!is.null(param_list) && !is.list(param_list)) stop("param_list needs to be a list.")
+  weights <- "Weights of the individual forecasts differ over time with median method"
+  fitted <- apply(prediction_matrix, 1, median)
+  accuracy_insample <- accuracy(fitted, observed_vector)
   
-  best_so_far<-ev_comb_EIG1(x)
-  
-  interm<-ev_comb_EIG2(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
+  if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
+    result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Input_Data = list(Actual_Train = x$Actual_Train, 
+                                                                                                                                                                       Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+    rownames(result$Accuracy_Train) <- "Training Set"
   }
   
-  interm<-ev_comb_EIG3(x, n_top_predictors=param_list$n_top_predictors, criterion=criterion)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
+  if (is.null(x$Forecasts_Test) == FALSE) {
+    newpred_matrix <- x$Forecasts_Test
+    pred <- apply(newpred_matrix, 1, median)
+    if (is.null(x$Actual_Test) == TRUE) {
+      result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred, 
+                               Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+      rownames(result$Accuracy_Train) <- "Training Set"
+    } else {
+      newobs_vector <- x$Actual_Test
+      accuracy_outsample <- accuracy(pred, newobs_vector)
+      result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred, 
+                               Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test, 
+                                                                                     Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+      rownames(result$Accuracy_Train) <- "Training Set"
+      rownames(result$Accuracy_Test) <- "Test Set"
+    }
   }
-  
-  interm<-ev_comb_EIG4(x, n_top_predictors=param_list$n_top_predictors, criterion=criterion)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_InvW(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_SA(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_TA(x, trim_factor=param_list$trim_factor, criterion=criterion)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_WA(x, trim_factor=param_list$trim_factor, criterion=criterion)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_OLS(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_QR(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_CLS(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  interm<-comb_MED(x)
-  if(interm$Accuracy_Train[, criterion] < best_so_far$Accuracy_Train[, criterion]) {
-    best_so_far<-interm
-  }
-  
-  return(best_so_far)
+  return(result)
 }
