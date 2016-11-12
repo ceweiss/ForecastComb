@@ -1,66 +1,109 @@
-#Winsorized Mean (including option for optimization of trim factor based on training set):
-comb_WA <- function(x, trim_factor=NULL, criterion=NULL) {
-  pckg<-c("forecast", "psych")
-  temp<-unlist(lapply(pckg, require, character.only=TRUE))
-  if (!all(temp==1)) stop("This function requires packages \"forecast\" and \"psych\".\n Use install.packages() if it is not yet installed.\n", call.=FALSE)
-  
-  if(class(x)!="foreccomb") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
-  observed_vector<-x$Actual_Train
-  prediction_matrix<-x$Forecasts_Train
-  modelnames <- x$modelnames
-  
-  if(!is.null(trim_factor)){
-    if(!is.numeric(trim_factor)) stop("Trimming Factor must be numeric.", call.=FALSE)
-    if(abs(trim_factor)>0.5) stop("Trimming Factor must be between 0 and 0.5.", call.=FALSE)
-    trimf<-trim_factor
-    adj_pred<-apply(prediction_matrix,1, function(x) winsor.mean(x, trim=trimf, na.rm=TRUE))
-  }
-  else{
-    if (is.null(criterion)) stop("Automatic optimization of trim factor requires selection of 'criterion'.", call.=FALSE)
-    if (length(grep(criterion, c("MAE", "MAPE", "RMSE")))!=1) stop("Criterion for trim factor optimization must be 'MAE', 'MAPE', or 'RMSE'.", call.=FALSE)
-    aux_matrix<-matrix(NA, nrow=51, ncol=1)
-    rownames(aux_matrix)<-seq(0,0.5,0.01)
-    for (i in 1:51){
-      aux_matrix[i,]<-accuracy(apply(prediction_matrix, 1, function(x) winsor.mean(x, trim=((i-1)/100),na.rm=TRUE)), observed_vector)[2]
-    }
-    best<-which(aux_matrix==min(aux_matrix))[1]
-    trimf<-as.numeric(rownames(aux_matrix)[best])
+#' PLACEHOLDER for comb_WA
+#'
+#' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#'
+#' @details
+#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
+#' as follows:
+#' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+#'
+#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param trim_factor Trim factor to be used.
+#' @param criterion If no trim factor is specified, an optimization criterion for automatized trimming needs to be defined.
+#'
+#' @return Returns an object of class 'foreccomb_res'
+#' \itemize{
+#' \item Method Returns the used forecast combination method.
+#' \item Models Returns the individual input models that were used for the forecast combinations.
+#' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
+#' \item Fitted Returns the fitted values of the combination method for the training set.
+#' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
+#' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
+#' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' }
+#'
+#' @examples
+#' obs <- rnorm(100)
+#' preds <- matrix(rnorm(1000, 1), 100, 10)
+#' train_o<-obs[1:80]
+#' train_p<-preds[1:80,]
+#' test_o<-obs[81:100]
+#' test_p<-preds[81:100,]
+#'
+#' data<-foreccomb(train_o, train_p, test_o, test_p)
+#' comb_WA(data, trim_factor=0.3)
+#'
+#' @seealso
+#' \code{\link[GeomComb]{foreccomb}},
+#' \code{\link[GeomComb]{plot.foreccomb_res}},
+#' \code{\link[GeomComb]{summary.foreccomb_res}},
+#' \code{\link[forecast]{accuracy}}
+#'
+#' @references
+#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+#'
+#' @keywords ts
+#'
+#' @import forecast
+#' @importFrom psych winsor.mean
+#'
+#' @export
+comb_WA <- function(x, trim_factor = NULL, criterion = NULL) {
+    if (class(x) != "foreccomb") 
+        stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
+    observed_vector <- x$Actual_Train
+    prediction_matrix <- x$Forecasts_Train
+    modelnames <- x$modelnames
     
-    adj_pred<-apply(prediction_matrix,1, function(x) winsor.mean(x, trim=trimf, na.rm=TRUE))
-  }
-  
-  weights <- "Weights of the individual forecasts differ over time with winsorized mean"
-  fitted <- adj_pred
-  accuracy_insample <- accuracy(fitted,observed_vector)
-  
-  if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)){
-    result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights,
-                             Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                             Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)),
-                        class = c("foreccomb_res"))
-    rownames(result$Accuracy_Train)<-"Training Set"
-  }
-  
-  if (is.null(x$Forecasts_Test)==FALSE){
-    newpred_matrix<-x$Forecasts_Test
-    pred <- apply(newpred_matrix, 1, function(x) winsor.mean(x, trim=trimf))
-    if (is.null(x$Actual_Test)==TRUE){
-      result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights,
-                               Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
-                               Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)),
-                          class = c("foreccomb_res"))
-      rownames(result$Accuracy_Train)<-"Training Set"
-    }else{
-      newobs_vector<-x$Actual_Test
-      accuracy_outsample <- accuracy(pred, newobs_vector)
-      result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights,
-                               Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
-                               Accuracy_Test = accuracy_outsample,
-                               Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test, Forecasts_Test = x$Forecasts_Test)),
-                          class = c("foreccomb_res"))
-      rownames(result$Accuracy_Train)<-"Training Set"
-      rownames(result$Accuracy_Test)<-"Test Set"
+    if (!is.null(trim_factor)) {
+        if (!is.numeric(trim_factor)) 
+            stop("Trimming Factor must be numeric.", call. = FALSE)
+        if (abs(trim_factor) > 0.5) 
+            stop("Trimming Factor must be between 0 and 0.5.", call. = FALSE)
+        trimf <- trim_factor
+        adj_pred <- apply(prediction_matrix, 1, function(x) winsor.mean(x, trim = trimf, na.rm = TRUE))
+    } else {
+        if (is.null(criterion)) 
+            stop("Automatic optimization of trim factor requires selection of 'criterion'.", call. = FALSE)
+        if (length(grep(criterion, c("MAE", "MAPE", "RMSE"))) != 1) 
+            stop("Criterion for trim factor optimization must be 'MAE', 'MAPE', or 'RMSE'.", call. = FALSE)
+        aux_matrix <- matrix(NA, nrow = 51, ncol = 1)
+        rownames(aux_matrix) <- seq(0, 0.5, 0.01)
+        for (i in 1:51) {
+            aux_matrix[i, ] <- accuracy(apply(prediction_matrix, 1, function(x) winsor.mean(x, trim = ((i - 1)/100), na.rm = TRUE)), observed_vector)[2]
+        }
+        best <- which(aux_matrix == min(aux_matrix))[1]
+        trimf <- as.numeric(rownames(aux_matrix)[best])
+        
+        adj_pred <- apply(prediction_matrix, 1, function(x) winsor.mean(x, trim = trimf, na.rm = TRUE))
     }
-  }
-  return(result)
+    
+    weights <- "Weights of the individual forecasts differ over time with winsorized mean"
+    fitted <- adj_pred
+    accuracy_insample <- accuracy(fitted, observed_vector)
+    
+    if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
+        result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample, 
+            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+        rownames(result$Accuracy_Train) <- "Training Set"
+    }
+    
+    if (is.null(x$Forecasts_Test) == FALSE) {
+        newpred_matrix <- x$Forecasts_Test
+        pred <- apply(newpred_matrix, 1, function(x) winsor.mean(x, trim = trimf))
+        if (is.null(x$Actual_Test) == TRUE) {
+            result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample, 
+                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+            rownames(result$Accuracy_Train) <- "Training Set"
+        } else {
+            newobs_vector <- x$Actual_Test
+            accuracy_outsample <- accuracy(pred, newobs_vector)
+            result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trimming_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample, 
+                Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test, 
+                  Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+            rownames(result$Accuracy_Train) <- "Training Set"
+            rownames(result$Accuracy_Test) <- "Test Set"
+        }
+    }
+    return(result)
 }
