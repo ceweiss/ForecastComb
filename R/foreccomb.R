@@ -60,6 +60,7 @@
 #' @keywords ts
 #' 
 #' @importFrom mtsdi mnimput
+#' @importFrom stats is.ts
 #' 
 #' @export
 foreccomb <- function (observed_vector, prediction_matrix, newobs=NULL, newpreds=NULL, byrow=FALSE, na.impute=TRUE)

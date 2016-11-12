@@ -30,7 +30,9 @@
 #' 
 #' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 #' @keywords ts
-#'
+#' 
+#' @importFrom stats IQR sd 
+#' 
 #' @export
 cs_dispersion<-function(x, measure=NULL, plot=FALSE){
   if(class(x)!="foreccomb") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
@@ -73,6 +75,7 @@ cs_dispersion<-function(x, measure=NULL, plot=FALSE){
     pl[,1]<-1:nrow(pl)
     pl[,2]<-cs_data
     
+    Index<-NULL #Hack to satisfy CRAN check.
     p<-ggplot(data=pl, aes(x=Index)) +
       geom_line(aes(y=pl$Value), colour="blue", na.rm=TRUE, size=0.5)+
       scale_x_continuous(breaks = round(seq(0,max(pl$Index),by = nrow(pl)/10),0)) +

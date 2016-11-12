@@ -51,6 +51,7 @@ plot.foreccomb_res<-function(x, ...) {
   forec<-x$Forecasts_Test
   observed_vector<-x$Input_Data$Actual_Train
   newobs_vector<-x$Input_Data$Actual_Test
+  Index<-NULL #Hack to satisfy CRAN check.
   
   if (is.null(forec) & is.null(newobs_vector)){
     cols <- c("ACTUAL"="black","COMBINED (FIT)"="#F04546")

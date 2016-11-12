@@ -49,6 +49,7 @@
 #' @keywords ts
 #' 
 #' @import forecast
+#' @importFrom stats median
 #' 
 #' @export
 comb_MED <- function(x) {
