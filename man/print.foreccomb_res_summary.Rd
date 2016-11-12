@@ -4,10 +4,12 @@
 \alias{print.foreccomb_res_summary}
 \title{PLACEHOLDER for print.foreccomb_res_summary}
 \usage{
-\method{print}{foreccomb_res_summary}(x, ...)
+\method{print}{foreccomb_res_summary}(object, ...)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{object}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{...}{Additional parameters}
 }
 \value{
 Returns formatted output of the foreccomb_res_summary object

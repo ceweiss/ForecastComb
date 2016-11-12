@@ -40,7 +40,7 @@ Adamson, K. A., and Prion S. (2013). Making Sense of Methods and Measurement: Me
 Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
-\code{\link[GeomComb2]{foreccomb}}
+\code{\link[GeomComb]{foreccomb}}
 }
 \keyword{ts}
 

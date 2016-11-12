@@ -4,10 +4,12 @@
 \alias{summary.foreccomb_res}
 \title{PLACEHOLDER for summary.foreccomb_res}
 \usage{
-\method{summary}{foreccomb_res}(x, ...)
+\method{summary}{foreccomb_res}(object, ...)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{object}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+
+\item{...}{Additional parameters}
 }
 \value{
 PLACEHOLDER Returns an object of class 'summary.foreccomb_res'
@@ -51,9 +53,9 @@ ev_comb_EIG1(data)
 Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
-\code{\link[GeomComb2]{foreccomb}},
-\code{\link[GeomComb2]{plot.foreccomb_res}},
-\code{\link[GeomComb2]{summary.foreccomb_res}},
+\code{\link[GeomComb]{foreccomb}},
+\code{\link[GeomComb]{plot.foreccomb_res}},
+\code{\link[GeomComb]{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
 \keyword{ts}

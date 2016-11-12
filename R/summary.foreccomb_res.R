@@ -14,7 +14,8 @@
 #' \deqn{\bold{w}^{EIG1} = \frac{1}{d_l} \bold{w}^l}
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
-#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param object An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param ... Additional parameters
 #'
 #' @return PLACEHOLDER Returns an object of class 'summary.foreccomb_res'
 #' \itemize{
@@ -38,9 +39,9 @@
 #' ev_comb_EIG1(data)
 #' 
 #' @seealso
-#' \code{\link[GeomComb2]{foreccomb}},
-#' \code{\link[GeomComb2]{plot.foreccomb_res}},
-#' \code{\link[GeomComb2]{summary.foreccomb_res}},
+#' \code{\link[GeomComb]{foreccomb}},
+#' \code{\link[GeomComb]{plot.foreccomb_res}},
+#' \code{\link[GeomComb]{summary.foreccomb_res}},
 #' \code{\link[forecast]{accuracy}}
 #' 
 #' @references 
@@ -51,29 +52,29 @@
 #' @import forecast
 #' 
 #' @export
-summary.foreccomb_res<-function(x, ...){
-  if(class(x)!="foreccomb_res") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
+summary.foreccomb_res<-function(object, ...){
+  if(class(object)!="foreccomb_res") stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call.=FALSE)
   
   ans <- list()
   
-  ans$Method<-x$Method
+  ans$Method<-object$Method
   
-  if(!is.character(x$Weights)) {
-    ans$weight<-matrix(x$Weights, ncol=1)
+  if(!is.character(object$Weights)) {
+    ans$weight<-matrix(object$Weights, ncol=1)
     colnames(ans$weight)<-"Combination Weight"
-    rownames(ans$weight)<-x$Models
+    rownames(ans$weight)<-object$Models
   } else {
     ans$weight<-"Weights of the individual forecasts differ over time with trimmed mean"
   }
   
-  ans$Intercept<-x$Intercept
+  ans$Intercept<-object$Intercept
   
-  ans$accuracy<-rbind(x$Accuracy_Train[1:5], x$Accuracy_Test)
+  ans$accuracy<-rbind(object$Accuracy_Train[1:5], object$Accuracy_Test)
   rownames(ans$accuracy)[1]<-"Training Set"
   
-  ans$data<-deparse(substitute(x))
+  ans$data<-deparse(substitute(object))
   
-  ans<-append(ans, subset(x, !(names(x) %in% c("Method", "Weights", "Intercept", "Accuracy_Train", "Accuracy_Test"))))
+  ans<-append(ans, subset(object, !(names(object) %in% c("Method", "Weights", "Intercept", "Accuracy_Train", "Accuracy_Test"))))
   
   class(ans) <- c("foreccomb_res_summary")
   
@@ -96,42 +97,43 @@ summary.foreccomb_res<-function(x, ...){
 #' \deqn{\bold{w}^{EIG1} = \frac{1}{d_l} \bold{w}^l}
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
-#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param object An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param ... Additional parameters
 #' 
 #' @return Returns formatted output of the foreccomb_res_summary object
 #' 
 #' @export
-print.foreccomb_res_summary <- function(x, ...) {
-  if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
+print.foreccomb_res_summary <- function(object, ...) {
+  if(class(object)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
   
   cat("\n")
   cat("Summary of Forecast Combination \n")
   cat("------------------------------- \n")
   cat("\n")
-  cat("Method: ", x$Method, "\n")
+  cat("Method: ", object$Method, "\n")
   cat("\n")
   cat("Individual Forecasts & Combination Weights: \n")
-  if(!is.character(x$weight)) {
+  if(!is.character(object$weight)) {
     cat("\n")
-    print(x$weight)
+    print(object$weight)
   } else {
-    cat(x$weight)
+    cat(object$weight)
     cat("\n")
   }
   cat("\n")
-  if (!is.null(x$Intercept)){
-    cat("Intercept (Bias-Correction): ", x$Intercept, "\n")
+  if (!is.null(object$Intercept)){
+    cat("Intercept (Bias-Correction): ", object$Intercept, "\n")
     cat("\n")
   }
   cat("Accuracy of Combined Forecast: \n")
   cat("\n")
-  print(x$accuracy)
+  print(object$accuracy)
   cat("\n")
   cat("Additional information can be extracted from the combination object: \n")
-  cat("For fitted values (training set): ", paste0(x$data, "$Fitted"), "\n")
-  if(!is.null(x$Forecasts_Test)){
-    cat("For forecasts (test set): ", paste0(x$data, "$Forecasts_Test"), "\n")
+  cat("For fitted values (training set): ", paste0(object$data, "$Fitted"), "\n")
+  if(!is.null(object$Forecasts_Test)){
+    cat("For forecasts (test set): ", paste0(object$data, "$Forecasts_Test"), "\n")
   }
-  cat("See ", paste0("str(", x$data, ")"), " for full list.")
+  cat("See ", paste0("str(", object$data, ")"), " for full list.")
 }
 

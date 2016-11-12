@@ -56,9 +56,9 @@ ev_comb_EIG3(data, n_top_predictors=2)
 Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
-\code{\link[GeomComb2]{foreccomb}},
-\code{\link[GeomComb2]{plot.foreccomb_res}},
-\code{\link[GeomComb2]{summary.foreccomb_res}},
+\code{\link[GeomComb]{foreccomb}},
+\code{\link[GeomComb]{plot.foreccomb_res}},
+\code{\link[GeomComb]{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
 \keyword{ts}

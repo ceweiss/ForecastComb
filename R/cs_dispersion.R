@@ -23,7 +23,7 @@
 #' cs_dispersion(data, measure = "IQR")
 #' 
 #' @seealso
-#' \code{\link[GeomComb2]{foreccomb}}
+#' \code{\link[GeomComb]{foreccomb}}
 #' 
 #' @references 
 #' Adamson, K. A., and Prion S. (2013). Making Sense of Methods and Measurement: Measures of Variability. \emph{Clinical Simulation in Nusing}, \bold{9}, e559--e560.
