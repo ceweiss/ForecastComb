@@ -71,7 +71,8 @@ foreccomb <- function (observed_vector, prediction_matrix, newobs=NULL, newpreds
   if(is.null(prediction_matrix)) stop("Training set must contain matrix of individual predictions.", call.=FALSE)
   prediction_matrix<-as.matrix(prediction_matrix)
   if(ncol(prediction_matrix)<2) stop("Forecast Combination requires at least 2 input forecasts.", call.=FALSE)
-  if(length(observed_vector)!=nrow(prediction_matrix)) stop("Lengths of actual values and prediction matrix do not coincide.", call.=FALSE)
+  if((length(observed_vector)!=nrow(prediction_matrix) && !byrow) || (length(observed_vector)!=ncol(prediction_matrix) && byrow)) 
+    stop("Lengths of actual values and prediction matrix do not coincide.", call.=FALSE)
   if (!is.null(newpreds)){
     if(class(newpreds)!="matrix") newpreds<-as.matrix(newpreds)
     
@@ -90,7 +91,7 @@ foreccomb <- function (observed_vector, prediction_matrix, newobs=NULL, newpreds
   }
   
   if (byrow == TRUE){
-    predictions<-t(predictions)
+    prediction_matrix<-t(prediction_matrix)
   }
   nmodels<-ncol(prediction_matrix)
   if (!is.ts(prediction_matrix)){
