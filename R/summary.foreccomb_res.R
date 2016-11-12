@@ -97,43 +97,43 @@ summary.foreccomb_res<-function(object, ...){
 #' \deqn{\bold{w}^{EIG1} = \frac{1}{d_l} \bold{w}^l}
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
-#' @param object An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #' @param ... Additional parameters
 #' 
 #' @return Returns formatted output of the foreccomb_res_summary object
 #' 
 #' @export
-print.foreccomb_res_summary <- function(object, ...) {
-  if(class(object)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
+print.foreccomb_res_summary <- function(x, ...) {
+  if(class(x)!="foreccomb_res_summary") stop("Data must be class 'foreccomb_res_summary'", call.=FALSE)
   
   cat("\n")
   cat("Summary of Forecast Combination \n")
   cat("------------------------------- \n")
   cat("\n")
-  cat("Method: ", object$Method, "\n")
+  cat("Method: ", x$Method, "\n")
   cat("\n")
   cat("Individual Forecasts & Combination Weights: \n")
-  if(!is.character(object$weight)) {
+  if(!is.character(x$weight)) {
     cat("\n")
-    print(object$weight)
+    print(x$weight)
   } else {
-    cat(object$weight)
+    cat(x$weight)
     cat("\n")
   }
   cat("\n")
-  if (!is.null(object$Intercept)){
-    cat("Intercept (Bias-Correction): ", object$Intercept, "\n")
+  if (!is.null(x$Intercept)){
+    cat("Intercept (Bias-Correction): ", x$Intercept, "\n")
     cat("\n")
   }
   cat("Accuracy of Combined Forecast: \n")
   cat("\n")
-  print(object$accuracy)
+  print(x$accuracy)
   cat("\n")
   cat("Additional information can be extracted from the combination object: \n")
-  cat("For fitted values (training set): ", paste0(object$data, "$Fitted"), "\n")
-  if(!is.null(object$Forecasts_Test)){
-    cat("For forecasts (test set): ", paste0(object$data, "$Forecasts_Test"), "\n")
+  cat("For fitted values (training set): ", paste0(x$data, "$Fitted"), "\n")
+  if(!is.null(x$Forecasts_Test)){
+    cat("For forecasts (test set): ", paste0(x$data, "$Forecasts_Test"), "\n")
   }
-  cat("See ", paste0("str(", object$data, ")"), " for full list.")
+  cat("See ", paste0("str(", x$data, ")"), " for full list.")
 }
 
