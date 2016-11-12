@@ -5,10 +5,10 @@
 
 The R package *GeomComb* presents functions to pool individual model forecasts
 using geometric (eigenvector-based) forecast combination methods. The package
-also provides functions for simple forecast combination methods (inverse rank
-approach, simple average, trimmed mean, and winsorized mean - including the 
-option of a criterion-based optimisation of the trimming factor) and 
-regression-based forecast combination methods.
+also provides functions for regression-based forecast combination methods, as well
+as simple forecast combination methods (inverse rank
+approach, simple average, median, trimmed mean, and winsorized mean - including the 
+option of a criterion-based optimisation of the trimming factor).
 
 The forecast combination methods allow for 3 different input types:
 
