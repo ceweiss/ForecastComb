@@ -5,12 +5,12 @@ Version: 1.0
 Depends:
     R (>= 3.0.2)
 Imports:
-    forecast,
-    ForecastCombinations,
-    ggplot2,
-    mtsdi,
-    psych,
-    Matrix
+    forecast (>= 7.3),
+    ForecastCombinations (>= 1.1),
+    ggplot2 (>= 2.1.0),
+    Matrix (>= 1.2-7.1),
+    mtsdi (>= 0.3.3),
+    psych (>= 1.6.9)
 Date: 2016-11-07
 Author: Christoph E. Weiss, Gernot R. Roetzer
 Maintainer: Christoph E. Weiss <info@ceweiss.com>
@@ -20,4 +20,5 @@ Description: The package provides eigenvector-based (geometric) forecast
     combination.
 BugReports: https://github.com/ceweiss/GeomComb/issues
 License: GPL (>= 2)
+LazyData: true
 RoxygenNote: 5.0.1

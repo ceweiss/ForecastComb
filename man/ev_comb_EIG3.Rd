@@ -2,36 +2,46 @@
 % Please edit documentation in R/ev_comb_EIG3.R
 \name{ev_comb_EIG3}
 \alias{ev_comb_EIG3}
-\title{PLACEHOLDER for ev_comb_EIG3}
+\title{Trimmed Eigenvector Forecast Combination}
 \usage{
-ev_comb_EIG3(x, n_top_predictors = NULL, criterion = NULL)
+ev_comb_EIG3(x, ntop_pred = NULL, criterion = NULL)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 
-\item{n_top_predictors}{Specifies the top number of predictors being used for the eigenvector-based combination.}
+\item{ntop_pred}{Specifies the number of retained predictors. If \code{NULL} (default), the inbuilt optimization algorithm selects this number.}
 
-\item{criterion}{If no n_top_predictors is specified, an optimization criterion for automatized specification of the number of top predictors is needed.}
+\item{criterion}{If \code{ntop_pred} is not specified, a selection criterion is required for the optimization algorithm: one of "MAE", "MAPE",
+or "RMSE". If \code{ntop_pred} is selected by the user, \code{criterion} should be set to \code{NULL} (default).}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the used forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Top_Predictors}{Number of retained predictors.}
+\item{Ranking}{Ranking of the predictors that determines which models are removed in the trimming step.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes forecast combination weights according to the trimmed eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+The underlying methodology of the trimmed eigenvector approach by Hsiao and Wan (2014) is the same as their \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}.
+The only difference is that the trimmed eigenvector approach pre-selects the models that serve as input for the forecast combination, only a subset of the available
+forecast models is retained, while the models with the worst performance are discarded.
+
+The number of retained forecast models is controlled via \code{ntop_pred}. The user can choose whether to select this number, or leave the selection
+to the inbuilt optimization algorithm (in that case \code{ntop_pred = NULL}). If the optimization algorithm should select the best number of
+retained models, the user must select the optimization \code{criterion}: MAE, MAPE, or RMSE. After this trimming step, the weights and the combined
+forecast are computed in the same way as in the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}.
+
+The trimmed eigenvector approach takes note of the eigenvector approaches' property to treat \eqn{y} and \eqn{\mathbf{f}}{f} symmetrically,
+which bears the risk that the (non-trimmed) eigenvector approaches' performance could be severely impaired by one or a few models that
+produce forecasts much worse than the average.
 }
 \examples{
 obs <- rnorm(100)
@@ -41,18 +51,26 @@ train_p<-preds[1:80,]
 test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
+## Number of retained models selected by the user:
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG3(data, n_top_predictors=2)
+ev_comb_EIG3(data, ntop_pred = 2, criterion = NULL)
 
+## Number of retained models selected by algorithm:
+data<-foreccomb(train_o, train_p, test_o, test_p)
+ev_comb_EIG3(data, ntop_pred = NULL, criterion = "RMSE")
+
+}
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
 }
 \references{
 Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link{ev_comb_EIG1}}
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
 

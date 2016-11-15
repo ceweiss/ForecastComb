@@ -2,32 +2,36 @@
 % Please edit documentation in R/comb_MED.R
 \name{comb_MED}
 \alias{comb_MED}
-\title{PLACEHOLDER for comb_MED}
+\title{Median Forecast Combination}
 \usage{
 comb_MED(x)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the used forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes a \sQuote{combined forecast} from a pool of individual model forecasts using their median at each point in time.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+Suppose \eqn{y_t} is the variable of interest, there are \eqn{N} not perfectly collinear predictors,
+\eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}{f_t = (f_{1t}, \ldots, f_{Nt})'}. For each point in time, the median method gives
+a weight of 1 to the median forecast and a weight of 0 to all other forecasts, the combined forecast is obtained by:
+
+\deqn{\hat{y}_t = {median(\mathbf{f}_{t}})}{\hat{y}_t = median(f_t)}
+
+The median method is an appealing simple, rank-based combination method that has been proposed by authors such as Armstrong (1989),
+McNees (1992), Hendry and Clements (2004), Stock and Watson (2004), and Timmermann (2006). It is more robust to outliers than the
+simple average approach.
 }
 \examples{
 obs <- rnorm(100)
@@ -38,17 +42,31 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+comb_MED(data)
 
 }
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
+}
 \references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+Armstrong, J. S. (1989). Combining Forecasts: The End of the Beginning or the Beginning of the End?. \emph{International Journal of Forecasting},
+\bold{5(4)}, 585--588.
+
+Hendry, D. F., and Clements, M. P. (2004). Pooling of Forecasts. \emph{The Econometrics Journal}, \bold{7(1)}, 1--31.
+
+McNees, S. K. (1992). The Uses and Abuses of 'Consensus' Forecasts. \emph{Journal of Forecasting}, \bold{11(8)}, 703--710.
+
+Stock, J. H., and Watson, M. W. (2004). Combination Forecasts of Output Growth in a Seven-Country Data Set. \emph{Journal of Forecasting}, \bold{23(6)},
+405--430.
+
+Timmermann, A. (2006). Forecast Combinations. In: Elliott, G., Granger, C. W. J., and Timmermann, A. (Eds.), \emph{Handbook of Economic Forecasting},
+\bold{1}, 135--196.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
+\code{\link{comb_SA}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
 

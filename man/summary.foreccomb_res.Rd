@@ -12,28 +12,14 @@
 \arguments{
 \item{object}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 
-\item{...}{Additional parameters}
+\item{...}{potential further arguments (require by generic)}
 
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
-\value{
-PLACEHOLDER Returns an object of class 'summary.foreccomb_res'
-\itemize{
- \item Actual_Train Actual Values (Training Set).
- \item Forecasts_Train Retained (non-missing) cross-section of individual model forecasts (Training Set).
- \item Actual_Test Actual Values (Test Set). If 'newobs' was provided.
- \item Forecasts_Test Retained (non-missing) cross-section of individual model forecasts (Test Set). If 'newpreds' was provided.
- \item nmodels Number of retained (non-missing) individual model forecasts.
- \item modelnames Model Names of the retained individual forecast models -- either provided or generic names are created (see above).
-}
-}
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
-}
-\details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+\code{summary} method for class \sQuote{foreccomb_res}. Includes information about combination method,
+combination weights assigned to the individual forecast models, as well as an accuracy evaluation of the combined
+forecast.
 }
 \examples{
 obs <- rnorm(100)
@@ -44,17 +30,15 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+fit<-comb_BG(data)
+summary(fit)
 
 }
-\references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
 }
 \seealso{
 \code{\link[GeomComb]{foreccomb}},
 \code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
-\code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
 

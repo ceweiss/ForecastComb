@@ -1,18 +1,16 @@
 #' @name plot.foreccomb_res
 #' @aliases plot.foreccomb_res
 #'
-#' @title Plot of Forecast Combination
-#' @description Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#' @title Plot results from forecast combination model
+#' @description Produces plots for the results of a forecast combination method. Either
+#' an actual vs. fitted plot (\code{which = 1}) or a barplot of the combination weights
+#' (\code{which = 2}).
 #'
-#' @details
-#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-#' as follows:
-#' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+#' @param x An object of class 'foreccomb_res'.
+#' @param which Type of plot: 1 = actual vs. fitted, 2 = combination weights.
+#' @param ... Other arguments passing to \code{\link[graphics]{plot.default}}.
 #'
-#' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
-#' @param ... Additional parameters.
-#'
-#' @return A diagram for the foreccomb_res class.
+#' @return A plot for the foreccomb_res class.
 #'
 #' @examples
 #' obs <- rnorm(100)
@@ -23,33 +21,33 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG1(data)
+#' fit <- ev_comb_EIG1(data)
+#' plot(fit)
 #'
 #' @seealso
 #' \code{\link[GeomComb]{foreccomb}},
-#' \code{\link[GeomComb]{plot.foreccomb_res}},
-#' \code{\link[GeomComb]{summary.foreccomb_res}},
-#' \code{\link[forecast]{accuracy}}
+#' \code{\link[GeomComb]{summary.foreccomb_res}}
 #'
-#' @references
-#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
-#'
-#' @keywords ts
+#' @author Christoph E. Weiss and Gernot R. Roetzer
 #'
 #' @import ggplot2
+#' @importFrom graphics barplot
 #'
-#'
+#' @method plot foreccomb_res
 #' @export
-plot.foreccomb_res <- function(x, ...) {
+plot.foreccomb_res <- function(x, which=1,...) {
     if (class(x) != "foreccomb_res")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     method <- x$Method
+    models <- x$Models
+    weights <- x$Weights
     fit <- x$Fitted
     forec <- x$Forecasts_Test
     observed_vector <- x$Input_Data$Actual_Train
     newobs_vector <- x$Input_Data$Actual_Test
     Index <- NULL  #Hack to satisfy CRAN check.
 
+    if (which == 1){
     if (is.null(forec) & is.null(newobs_vector)) {
         cols <- c(ACTUAL = "black", `COMBINED (FIT)` = "#F04546")
 
@@ -101,5 +99,15 @@ plot.foreccomb_res <- function(x, ...) {
                 size = 1, linetype = "longdash", colour = "black")
             p
         }
+    }
+    } else {
+      if (which == 2){
+        if (is.numeric(weights)){
+          graphics::barplot(weights, main=paste0(method, "\nCombination Weights"), ylab="Combination Weight",
+                            names.arg = models, ylim=c(min(1.1*min(weights), 0), 1.1*max(weights)), las=3, cex.names=0.8)
+        } else {
+        message(paste0(method, " produces time-varying weights among input models. Cannot plot weights."))
+      }
+    } else stop("Parameter 'which' must be either 1 or 2.", call. = FALSE)
     }
 }

@@ -2,32 +2,36 @@
 % Please edit documentation in R/comb_InvW.R
 \name{comb_InvW}
 \alias{comb_InvW}
-\title{PLACEHOLDER for comb_invW}
+\title{Inverse Rank Forecast Combination}
 \usage{
 comb_InvW(x)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the used forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes forecast combination weights according to the inverse rank approach by Aiolfi and Timmermann (2006) and produces forecasts for the test set, if provided.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+In the inverse rank approach by Aiolfi and Timmermann (2006), the combination weights are inversely proportional to the forecast model's rank, \eqn{Rank_i}:
+
+\deqn{w_i^{InvW} = \frac{Rank_i^{-1}}{\Sigma_{j=1}^N  Rank_j^{-1}}}{w_i = Rank_i^{-1} / \Sigma_{j=1}^N  Rank_j^{-1}}
+
+The combined forecast is then obtained by:
+
+\deqn{\hat{y}_t = {\mathbf{f}_{t}}'\mathbf{w}^{InvW}}{\hat{y}_t = (f_t)'w}
+
+This is a robust variant of the Bates/Granger (1969) approach and also ignores correlations across forecast errors.
 }
 \examples{
 obs <- rnorm(100)
@@ -38,17 +42,22 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+comb_InvW(data)
 
 }
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
+}
 \references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+Aiolfi, M., amd Timmermann, A. (2006). Persistence in Forecasting Performance and Conditional Combination Strategies. \emph{Journal of Econometrics}, \bold{135(1)}, 31--53.
+
+Bates, J. M., and Granger, C. W. (1969). The Combination of Forecasts. \emph{Journal of the Operational Research Society}, \bold{20(4)}, 451--468.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
+\code{\link{comb_BG}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
 

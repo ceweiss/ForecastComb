@@ -73,12 +73,12 @@ auto.combine <- function(x, criterion, param_list = NULL) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG3(x, n_top_predictors = param_list$n_top_predictors, criterion = criterion)
+  interm <- ev_comb_EIG3(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG4(x, n_top_predictors = param_list$n_top_predictors, criterion = criterion)
+  interm <- ev_comb_EIG4(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }

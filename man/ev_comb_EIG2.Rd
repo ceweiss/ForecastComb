@@ -7,30 +7,45 @@
 ev_comb_EIG2(x)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Intercept Returns the intercept (bias correction). Only if the underlying predictive models all yield unbiased predictions, this term would be zero.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the used forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Intercept}{Returns the intercept (bias correction).}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 }
 \description{
 Computes forecast combination weights according to the bias-corrected eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
 }
 \details{
-The bias-corrected eigenvector approach builds on the idea that if some of the predictive models yield biased predictions, 
-the accuracy of the standard eigenvector approach can be improved by eliminating the bias. In contrast to the standard 
-eigenvector approach, the eigenvectors for retrieving combination weights are now based on the covariance matrix of the 
-underlying model forecasts, rather than the mean-squared prediction error matrix. For a derivation, see Hsiao and Wan (2014), p. 297.
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+The bias-corrected eigenvector approach builds on the idea that if one or more of the predictive models yield biased predictions,
+the accuracy of the standard eigenvector approach can be improved by eliminating the bias. The optimization procedure to
+obtain combination weights coincides with the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}, except
+that it is applied to the centered MSPE matrix after extracting the bias (by subtracting the column means of the MSPE).
+
+The combination weights are calculated as:
+
+
+\deqn{\mathbf{w}^{EIG2} = \frac{1}{\tilde{d}_l} \tilde{\mathbf{w}}^l}{w = (1 / \tilde{d}_l) * \tilde{w}^l}
+
+where \eqn{\tilde{d}_j} and \eqn{\tilde{\mathbf{w}}^j}{\tilde{w}^j} are defined analogously to \eqn{d_j} and \eqn{\mathbf{w}^j}{w^j}
+in the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}, with the only difference that they correspond to the spectral decomposition of the
+centered MSPE matrix rather than the uncentered one.
+
+The combined forecast is then obtained by:
+
+\deqn{\hat{y}_t = a + {\mathbf{f}_t}'\mathbf{w}^{EIG2}}{\hat{y}_t = a + (f_t)'w}
+
+where \eqn{a = E(y_t) - E(\mathbf{f}_t)' \mathbf{w}^{EIG2}}{a = E(y_t) - E(f_t)'w} is the intercept for bias correction. If the actual
+series and the forecasts are stationary, the expectations can be approximated by the time series means, i.e. the intercept is obtained
+by subtracting the weighted sum of column means of the MSPE matrix from the mean of the actual series. Forecast combination methods
+including intercepts therefore usually require stationarity.
 }
 \examples{
 obs <- rnorm(100)
@@ -44,14 +59,17 @@ data<-foreccomb(train_o, train_p, test_o, test_p)
 ev_comb_EIG2(data)
 
 }
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
+}
 \references{
 Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
-\code{\link[forecast]{accuracy}}
+\code{\link{ev_comb_EIG1}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
+\code{\link{accuracy}}
 }
-\keyword{ts}
 

@@ -2,25 +2,24 @@
 % Please edit documentation in R/plot.foreccomb_res.R
 \name{plot.foreccomb_res}
 \alias{plot.foreccomb_res}
-\title{Plot of Forecast Combination}
+\title{Plot results from forecast combination model}
 \usage{
-\method{plot}{foreccomb_res}(x, ...)
+\method{plot}{foreccomb_res}(x, which = 1, ...)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class 'foreccomb_res'.}
 
-\item{...}{Additional parameters.}
+\item{which}{Type of plot: 1 = actual vs. fitted, 2 = combination weights.}
+
+\item{...}{Other arguments passing to \code{\link[graphics]{plot.default}}.}
 }
 \value{
-A diagram for the foreccomb_res class.
+A plot for the foreccomb_res class.
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
-}
-\details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+Produces plots for the results of a forecast combination method. Either
+an actual vs. fitted plot (\code{which = 1}) or a barplot of the combination weights
+(\code{which = 2}).
 }
 \examples{
 obs <- rnorm(100)
@@ -31,17 +30,15 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-ev_comb_EIG1(data)
+fit <- ev_comb_EIG1(data)
+plot(fit)
 
 }
-\references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
 }
 \seealso{
 \code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
-\code{\link[forecast]{accuracy}}
+\code{\link[GeomComb]{summary.foreccomb_res}}
 }
-\keyword{ts}
 

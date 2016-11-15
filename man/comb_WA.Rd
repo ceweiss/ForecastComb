@@ -2,36 +2,49 @@
 % Please edit documentation in R/comb_WA.R
 \name{comb_WA}
 \alias{comb_WA}
-\title{PLACEHOLDER for comb_WA}
+\title{Winsorized Mean Forecast Combination}
 \usage{
 comb_WA(x, trim_factor = NULL, criterion = NULL)
 }
 \arguments{
-\item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
+\item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 
-\item{trim_factor}{Trim factor to be used.}
+\item{trim_factor}{numeric. Must be between 0 and 0.5.}
 
-\item{criterion}{If no trim factor is specified, an optimization criterion for automatized trimming needs to be defined.}
+\item{criterion}{If \code{trim_factor} is not specified, an optimization criterion for automated trimming needs to be defined. One of
+"MAE", "MAPE", or "RMSE".}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the used forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Trim Factor}{Returns the trim factor, \eqn{\lambda}.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes a \sQuote{combined forecast} from a pool of individual model forecasts using winsorized mean at each point in time.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+Suppose \eqn{y_t} is the variable of interest, there are \eqn{N} not perfectly collinear predictors,
+\eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}{f_t = (f_{1t}, \ldots, f_{Nt})'}. For each point in time, the order forecasts are
+computed:
+
+\deqn{\mathbf{f}_t^{ord} = (f_{(1)t}, \ldots, f_{(N)t})'}{(f_t)_ord = (f_{(1)t}, \ldots, f_{(N)t})'}
+
+Using a trim factor \eqn{\lambda} (i.e., the top/bottom \eqn{\lambda \%} are winsorized), and setting \eqn{K = N\lambda} ,
+the combined forecast is calculated as (Jose and Winkler, 2008):
+
+\deqn{\hat{y}_t = \frac{1}{N} \left[Kf_{(K+1)t} + \sum_{i=K+1}^{N-K} f_{(i)t} + Kf_{(N-K)t}\right]}{\hat{y}_t = 1/N *[Kf_{(K+1)t} + \sum_{i=K+1}^{N-K} f_{(K)t} + Kf_{(N-K)t}]}
+
+Like the trimmed mean, the winsorized mean is a robust statistic that is less sensitive to outliers than the simple average.
+It is less extreme about handling outliers than the trimmed mean and preferred by Jose and Winkler (2008) for this reason.
+
+This method allows the user to select \eqn{\lambda} (by specifying \code{trim_factor}), or to leave the selection to
+an optimization algorithm -- in which case the optimization criterion has to be selected (one of "MAE", "MAPE", or "RMSE").
 }
 \examples{
 obs <- rnorm(100)
@@ -41,18 +54,28 @@ train_p<-preds[1:80,]
 test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
+## User-selected trim factor:
 data<-foreccomb(train_o, train_p, test_o, test_p)
-comb_WA(data, trim_factor=0.3)
+comb_TA(data, trim_factor=0.1)
+
+## Algorithm-optimized trim factor:
+data<-foreccomb(train_o, train_p, test_o, test_p)
+comb_TA(data, criterion="RMSE")
 
 }
+\author{
+Christoph E. Weiss and Gernot R. Roetzer
+}
 \references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+Jose, V. R. R., and Winkler, R. L. (2008). Simple Robust Averages of Forecasts: Some Empirical Results. \emph{International Journal of Forecasting}, \bold{24(1)}, 163--169.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link[psych]{winsor.mean}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
+\code{\link{comb_SA}},
+\code{\link{comb_TA}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
 
