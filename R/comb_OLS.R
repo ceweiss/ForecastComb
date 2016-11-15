@@ -1,12 +1,20 @@
-#' PLACEHOLDER for comb_OLS
+#' Ordinary Least Squares Forecast Combination
 #'
-#' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#' Computes forecast combination weights via the \emph{ForecastCombinations} package.
 #'
 #' @details
-#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-#' as follows:
+#' The function \code{comb_ols} is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
+#' \emph{ForecastCombinations} package.
+#'  
+#' The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
+#' estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of
+#' the forecasts.
+#' 
+#' Suppose that there are N different predictors  \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'},
+#' then the forecast combination for one data point can be represented as:
+#' \deqn{y_t = b + \sum_{i=1}^{N} w_i f_i}  
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
-#'
+#' 
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #'
 #' @return Returns an object of class 'foreccomb_res'
@@ -14,6 +22,7 @@
 #' \item Method Returns the used forecast combination method.
 #' \item Models Returns the individual input models that were used for the forecast combinations.
 #' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
+#' \item Intercept Returns the intercept of the linear regression.
 #' \item Fitted Returns the fitted values of the combination method for the training set.
 #' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
 #' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
@@ -29,7 +38,7 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' comb_EIG1(data)
+#' comb_OLS(data)
 #'
 #' @seealso
 #' \code{\link[GeomComb]{foreccomb}},
@@ -38,19 +47,14 @@
 #' \code{\link[forecast]{accuracy}}
 #'
 #' @references
-#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
-#'
+#' Granger, C., and Ramanathan, R. (1984). Improved Methods Of Combining Forecasts. \emph{Journal of Forecasting}, \bold{3(2)}, 97--204.
+#' 
 #' @keywords ts
 #'
 #' @import forecast ForecastCombinations
 #'
 #' @export
 comb_OLS <- function(x) {
-    pckg <- c("forecast", "ForecastCombinations")
-    temp <- unlist(lapply(pckg, require, character.only = TRUE))
-    if (!all(temp == 1)) 
-        stop("This function requires packages \"forecast\" and \"ForecastCombinations\".\n Use install.packages() if they are not yet installed.\n", call. = FALSE)
-    
     if (class(x) != "foreccomb") 
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train
