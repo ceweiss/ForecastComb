@@ -2,19 +2,19 @@
 % Please edit documentation in R/auto_combine.R
 \name{auto_combine}
 \alias{auto_combine}
-\title{PLACEHOLDER for auto.combine}
+\title{Automatized Forecast Combination}
 \usage{
 auto_combine(x, criterion, param_list = NULL)
 }
 \arguments{
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 
-\item{criterion}{Specifies optimization criterion. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.}
+\item{criterion}{Specifies loss criterion. Set criterion to either 'RMSE', 'MAE', or 'MAPE'.}
 
-\item{param_list}{Can contain additional parameters for the different combination methods.}
+\item{param_list}{Can contain additional parameters for the different combination methods (see example below).}
 }
 \value{
-Returns an object of class 'foreccomb_res'
+Returns an object of class 'foreccomb_res' that represents the result for the best-fit forecast combination method.
 \itemize{
 \item Method Returns the used forecast combination method.
 \item Models Returns the individual input models that were used for the forecast combinations.
@@ -26,12 +26,18 @@ Returns an object of class 'foreccomb_res'
 }
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes the fit for all the different forecasting methods on the provided dataset with respect to the loss criterion.
+Returns the best-fit method.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
-The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
+The function \code{auto_combine} allows to quickly apply all the different forecast combination method onto the provided time series
+data and selects the method with the best fit. 
+The user can choose from 3 different loss criteria for the best-fit evaluation: 
+root mean square error (\code{criterion='RMSE'}), mean absolute error (\code{criterion='MAE'}), and
+mean absolute prediction error (\code{criterion='MAPE'}).
+Moreover, in case that the user does not want to optimize over the parameters of some of the combination methods,
+\code{auto_combine} allows to specify the parameter values for these methods explicitly.
+The best-fit results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 }
 \examples{
 obs <- rnorm(100)
@@ -42,11 +48,16 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-comb_EIG1(data)
 
-}
-\references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+# Evaluating all the forecast combination methods and returning the best. If necessary, it uses the 
+# built-in automatized parameter search methods for the different methods. 
+best_combination<-auto_combine(data)
+
+# Same as above, but now we restrict the parameter ntop_pred for the method comb_EIG3 to be 3.
+param_list<-list()
+param_list$comb_EIG3$ntop_pred<-3
+best_combination_restricted<-auto_combine(data, criterion = "MAPE", param_list = param_list)
+
 }
 \seealso{
 \code{\link[GeomComb]{foreccomb}},
