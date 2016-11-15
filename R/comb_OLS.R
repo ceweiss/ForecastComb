@@ -1,6 +1,6 @@
 #' Ordinary Least Squares Forecast Combination
 #'
-#' Computes forecast combination weights via the \emph{ForecastCombinations} package.
+#' Computes ordinary least squares forecast combination weights via the \emph{ForecastCombinations} package.
 #'
 #' @details
 #' The function \code{comb_ols} is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
