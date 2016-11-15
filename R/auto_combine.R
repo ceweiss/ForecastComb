@@ -30,7 +30,7 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG1(data)
+#' comb_EIG1(data)
 #'
 #' @seealso
 #' \code{\link[GeomComb]{foreccomb}},
@@ -46,7 +46,7 @@
 #' @import forecast
 #'
 #' @export
-auto.combine <- function(x, criterion, param_list = NULL) {
+auto_combine <- function(x, criterion, param_list = NULL) {
   if (is.null(criterion) || !(criterion %in% c("RMSE", "MAE", "MAPE"))){
     stop("Valid optimization criterion is needed. Set criterion
              to either 'RMSE', 'MAE', or 'MAPE'.", call. = FALSE)
@@ -63,22 +63,22 @@ auto.combine <- function(x, criterion, param_list = NULL) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG1(x)
+  interm <- comb_EIG1(x)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG2(x)
+  interm <- comb_EIG2(x)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG3(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
+  interm <- comb_EIG3(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }
 
-  interm <- ev_comb_EIG4(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
+  interm <- comb_EIG4(x, ntop_pred = param_list$ntop_pred, criterion = criterion)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }

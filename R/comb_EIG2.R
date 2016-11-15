@@ -5,7 +5,7 @@
 #' @details
 #' The bias-corrected eigenvector approach builds on the idea that if one or more of the predictive models yield biased predictions,
 #' the accuracy of the standard eigenvector approach can be improved by eliminating the bias. The optimization procedure to
-#' obtain combination weights coincides with the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}, except
+#' obtain combination weights coincides with the \code{\link[=comb_EIG1]{standard eigenvector approach}}, except
 #' that it is applied to the centered MSPE matrix after extracting the bias (by subtracting the column means of the MSPE).
 #'
 #' The combination weights are calculated as:
@@ -14,7 +14,7 @@
 #' \deqn{\mathbf{w}^{EIG2} = \frac{1}{\tilde{d}_l} \tilde{\mathbf{w}}^l}{w = (1 / \tilde{d}_l) * \tilde{w}^l}
 #'
 #' where \eqn{\tilde{d}_j} and \eqn{\tilde{\mathbf{w}}^j}{\tilde{w}^j} are defined analogously to \eqn{d_j} and \eqn{\mathbf{w}^j}{w^j}
-#' in the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}, with the only difference that they correspond to the spectral decomposition of the
+#' in the \code{\link[=comb_EIG1]{standard eigenvector approach}}, with the only difference that they correspond to the spectral decomposition of the
 #' centered MSPE matrix rather than the uncentered one.
 #'
 #' The combined forecast is then obtained by:
@@ -49,10 +49,10 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG2(data)
+#' comb_EIG2(data)
 #'
 #' @seealso
-#' \code{\link{ev_comb_EIG1}},
+#' \code{\link{comb_EIG1}},
 #' \code{\link{foreccomb}},
 #' \code{\link{plot.foreccomb_res}},
 #' \code{\link{summary.foreccomb_res}},
@@ -64,7 +64,7 @@
 #' @import forecast
 #'
 #' @export
-ev_comb_EIG2 <- function(x) {
+comb_EIG2 <- function(x) {
     if (class(x) != "foreccomb")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train

@@ -30,7 +30,7 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-fit <- ev_comb_EIG1(data)
+fit <- comb_EIG1(data)
 plot(fit)
 
 }

@@ -4,17 +4,17 @@
 #'
 #' @details
 #' The underlying methodology of the trimmed bias-corrected eigenvector approach by Hsiao and Wan (2014) is the same as their
-#' \code{\link[=ev_comb_EIG2]{bias-corrected eigenvector approach}}. The only difference is that the bias-corrected trimmed eigenvector approach
+#' \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}}. The only difference is that the bias-corrected trimmed eigenvector approach
 #' pre-selects the models that serve as input for the forecast combination, only a subset of the available forecast models is retained,
 #' while the models with the worst performance are discarded.
 #'
 #' The number of retained forecast models is controlled via \code{ntop_pred}. The user can choose whether to select this number, or leave the selection
 #' to the inbuilt optimization algorithm (in that case \code{ntop_pred = NULL}). If the optimization algorithm should select the best number of
 #' retained models, the user must select the optimization \code{criterion}: MAE, MAPE, or RMSE. After this trimming step, the weights, the intercept and the
-#' combined forecast are computed in the same way as in the \code{\link[=ev_comb_EIG2]{bias-corrected eigenvector approach}}.
+#' combined forecast are computed in the same way as in the \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}}.
 #'
-#' The bias-corrected trimmed eigenvector approach combines the strengths of the \code{\link[=ev_comb_EIG2]{bias-corrected eigenvector approach}} and the
-#' \code{\link[=ev_comb_EIG3]{trimmed eigenvector approach}}.
+#' The bias-corrected trimmed eigenvector approach combines the strengths of the \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}} and the
+#' \code{\link[=comb_EIG3]{trimmed eigenvector approach}}.
 #'
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #' @param ntop_pred Specifies the number of retained predictors. If \code{NULL} (default), the inbuilt optimization algorithm selects this number.
@@ -45,15 +45,15 @@
 #'
 #' ## Number of retained models selected by the user:
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG4(data, ntop_pred = 2, criterion = NULL)
+#' comb_EIG4(data, ntop_pred = 2, criterion = NULL)
 #'
 #' ## Number of retained models selected by algorithm:
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG4(data, ntop_pred = NULL, criterion = "RMSE")
+#' comb_EIG4(data, ntop_pred = NULL, criterion = "RMSE")
 #'
 #' @seealso
-#' \code{\link{ev_comb_EIG2}}
-#' \code{\link{ev_comb_EIG3}}
+#' \code{\link{comb_EIG2}}
+#' \code{\link{comb_EIG3}}
 #' \code{\link[GeomComb]{foreccomb}},
 #' \code{\link[GeomComb]{plot.foreccomb_res}},
 #' \code{\link[GeomComb]{summary.foreccomb_res}},
@@ -65,7 +65,7 @@
 #' @import forecast
 #'
 #' @export
-ev_comb_EIG4 <- function(x, ntop_pred = NULL, criterion = NULL) {
+comb_EIG4 <- function(x, ntop_pred = NULL, criterion = NULL) {
     pckg <- c("forecast")
     temp <- unlist(lapply(pckg, require, character.only = TRUE))
     if (!all(temp == 1))

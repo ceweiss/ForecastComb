@@ -48,7 +48,7 @@
 #'
 #' @seealso
 #' \code{\link{comb_BG}},
-#' \code{\link{ev_comb_EIG1}},
+#' \code{\link{comb_EIG1}},
 #' \code{\link{foreccomb}},
 #' \code{\link{plot.foreccomb_res}},
 #' \code{\link{summary.foreccomb_res}},

@@ -3,14 +3,14 @@
 #' @description Computes forecast combination weights according to the trimmed eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
 #'
 #' @details
-#' The underlying methodology of the trimmed eigenvector approach by Hsiao and Wan (2014) is the same as their \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}.
+#' The underlying methodology of the trimmed eigenvector approach by Hsiao and Wan (2014) is the same as their \code{\link[=comb_EIG1]{standard eigenvector approach}}.
 #' The only difference is that the trimmed eigenvector approach pre-selects the models that serve as input for the forecast combination, only a subset of the available
 #' forecast models is retained, while the models with the worst performance are discarded.
 #'
 #' The number of retained forecast models is controlled via \code{ntop_pred}. The user can choose whether to select this number, or leave the selection
 #' to the inbuilt optimization algorithm (in that case \code{ntop_pred = NULL}). If the optimization algorithm should select the best number of
 #' retained models, the user must select the optimization \code{criterion}: MAE, MAPE, or RMSE. After this trimming step, the weights and the combined
-#' forecast are computed in the same way as in the \code{\link[=ev_comb_EIG1]{standard eigenvector approach}}.
+#' forecast are computed in the same way as in the \code{\link[=comb_EIG1]{standard eigenvector approach}}.
 #'
 #' The trimmed eigenvector approach takes note of the eigenvector approaches' property to treat \eqn{y} and \eqn{\mathbf{f}}{f} symmetrically,
 #' which bears the risk that the (non-trimmed) eigenvector approaches' performance could be severely impaired by one or a few models that
@@ -44,14 +44,14 @@
 #'
 #' ## Number of retained models selected by the user:
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG3(data, ntop_pred = 2, criterion = NULL)
+#' comb_EIG3(data, ntop_pred = 2, criterion = NULL)
 #'
 #' ## Number of retained models selected by algorithm:
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG3(data, ntop_pred = NULL, criterion = "RMSE")
+#' comb_EIG3(data, ntop_pred = NULL, criterion = "RMSE")
 #'
 #' @seealso
-#' \code{\link{ev_comb_EIG1}}
+#' \code{\link{comb_EIG1}}
 #' \code{\link{foreccomb}},
 #' \code{\link{plot.foreccomb_res}},
 #' \code{\link{summary.foreccomb_res}},
@@ -63,7 +63,7 @@
 #' @import forecast
 #'
 #' @export
-ev_comb_EIG3 <- function(x, ntop_pred = NULL, criterion = NULL) {
+comb_EIG3 <- function(x, ntop_pred = NULL, criterion = NULL) {
     if (class(x) != "foreccomb")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train

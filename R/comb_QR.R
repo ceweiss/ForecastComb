@@ -29,7 +29,7 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' ev_comb_EIG1(data)
+#' comb_EIG1(data)
 #'
 #' @seealso
 #' \code{\link[GeomComb]{foreccomb}},
