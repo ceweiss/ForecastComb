@@ -1,10 +1,16 @@
-#' PLACEHOLDER for comb_QR
+#' Least Absolute Deviation Forecast Combination
 #'
-#' Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+#' Computes least absolute deviation forecast combination weights via the \emph{ForecastCombinations} package.
 #'
 #' @details
-#' The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-#' as follows:
+#' The function \code{comb_LAD} is a wrapper around the least absolute deviation (LAD) forecast combination implementation of the
+#' \emph{ForecastCombinations} package.
+#' 
+#' The defining property of \code{comb_LAD} is that it does not minimize the squared error loss like \code{\link{comb_OLS}} and
+#' \code{\link{comb_CLS}}, but the absolute values of the errors. This has the advantage that it is more robust against outliers,
+#' that is, in the case of forecast combination, \code{comb_LAD} tends to penalize models, which have for some observations high errors,
+#' less harshly than the least squares methods would.
+#' 
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
@@ -14,10 +20,12 @@
 #' \item Method Returns the used forecast combination method.
 #' \item Models Returns the individual input models that were used for the forecast combinations.
 #' \item Weights Returns the combination weights obtained by applying the combination method to the training set.
+#' \item Intercept Returns the intercept of the model.
 #' \item Fitted Returns the fitted values of the combination method for the training set.
 #' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
 #' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
 #' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' \item Input_Data Returns the data forwarded to the method.
 #' }
 #'
 #' @examples
@@ -29,7 +37,7 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' comb_EIG1(data)
+#' comb_LAD(data)
 #'
 #' @seealso
 #' \code{\link[GeomComb]{foreccomb}},
@@ -37,15 +45,12 @@
 #' \code{\link[GeomComb]{summary.foreccomb_res}},
 #' \code{\link[forecast]{accuracy}}
 #'
-#' @references
-#' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
-#'
 #' @keywords ts
 #'
 #' @import forecast ForecastCombinations
 #'
 #' @export
-comb_QR <- function(x) {
+comb_LAD <- function(x) {
     if (class(x) != "foreccomb") 
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train

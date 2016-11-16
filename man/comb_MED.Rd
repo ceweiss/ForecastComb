@@ -18,13 +18,14 @@ Returns an object of class \code{foreccomb_res} with the following components:
 \item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
 \item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
 \item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
+\item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
 Computes a \sQuote{combined forecast} from a pool of individual model forecasts using their median at each point in time.
 }
 \details{
 Suppose \eqn{y_t} is the variable of interest, there are \eqn{N} not perfectly collinear predictors,
-\eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}{f_t = (f_{1t}, \ldots, f_{Nt})'}. For each point in time, the median method gives
+\eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}. For each point in time, the median method gives
 a weight of 1 to the median forecast and a weight of 0 to all other forecasts, the combined forecast is obtained by:
 
 \deqn{\hat{y}_t = {median(\mathbf{f}_{t}})}{\hat{y}_t = median(f_t)}

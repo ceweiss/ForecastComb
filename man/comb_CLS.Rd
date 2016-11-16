@@ -29,7 +29,7 @@ Computes constrained least squares forecast combination weights via the \emph{Fo
 The function \code{comb_CLS} is a wrapper around the constrained least squares (CLS) forecast combination implementation of the
 \emph{ForecastCombinations} package.
 
-Compared to the ordinary least squares forecast combination method \link{comb_OLS}, CLS forecast combination has the additional
+Compared to the ordinary least squares forecast combination method \code{\link{comb_OLS}}, CLS forecast combination has the additional
 requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
 the combinations of \code{comb_CLS} are affine combinations.
 

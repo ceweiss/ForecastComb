@@ -24,6 +24,7 @@ Returns an object of class \code{foreccomb_res} with the following components:
 \item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
 \item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
 \item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
+\item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
 Computes a \sQuote{combined forecast} from a pool of individual model forecasts using trimmed mean at each point in time.

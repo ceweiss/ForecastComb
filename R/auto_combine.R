@@ -5,12 +5,15 @@
 #'
 #' @details
 #' The function \code{auto_combine} allows to quickly apply all the different forecast combination method onto the provided time series
-#' data and selects the method with the best fit. 
+#' data and selects the method with the best fit.
+#' 
 #' The user can choose from 3 different loss criteria for the best-fit evaluation: 
 #' root mean square error (\code{criterion='RMSE'}), mean absolute error (\code{criterion='MAE'}), and
 #' mean absolute prediction error (\code{criterion='MAPE'}).
+#' 
 #' Moreover, in case that the user does not want to optimize over the parameters of some of the combination methods,
 #' \code{auto_combine} allows to specify the parameter values for these methods explicitly.
+#' 
 #' The best-fit results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
@@ -37,8 +40,9 @@
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
 #' 
-#' # Evaluating all the forecast combination methods and returning the best. If necessary, it uses the 
-#' # built-in automatized parameter search methods for the different methods. 
+#' # Evaluating all the forecast combination methods and returning the best. 
+#' # If necessary, it uses the built-in automatized parameter search methods
+#' # for the different methods. 
 #' best_combination<-auto_combine(data, criterion = "MAPE")
 #' 
 #' # Same as above, but now we restrict the parameter ntop_pred for the method comb_EIG3 to be 3.
@@ -124,7 +128,7 @@ auto_combine <- function(x, criterion, param_list = NULL) {
     best_so_far <- interm
   }
 
-  interm <- comb_QR(x)
+  interm <- comb_LAD(x)
   if (interm$Accuracy_Train[,criterion] < best_so_far$Accuracy_Train[,criterion]) {
     best_so_far <- interm
   }
