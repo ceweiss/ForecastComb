@@ -3,7 +3,7 @@
 #' Computes ordinary least squares forecast combination weights via the \emph{ForecastCombinations} package.
 #'
 #' @details
-#' The function \code{comb_ols} is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
+#' The function \code{comb_CLS} is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
 #' \emph{ForecastCombinations} package.
 #'  
 #' The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
@@ -12,7 +12,10 @@
 #' 
 #' Suppose that there are N different predictors  \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'},
 #' then the forecast combination for one data point can be represented as:
-#' \deqn{y_t = b + \sum_{i=1}^{N} w_i f_i}  
+#' \deqn{y_t = b + \sum_{i=1}^{N} w_i f_i}
+#' 
+#' For more information on the method, please see \link[ForecastCombinations]{Forecast_comb} from the package \emph{ForecastCombinations}.
+#' 
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #' 
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
@@ -27,6 +30,7 @@
 #' \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
 #' \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
 #' \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+#' \item Input_Data Returns the data forwarded to the method.
 #' }
 #'
 #' @examples

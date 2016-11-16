@@ -2,7 +2,7 @@
 % Please edit documentation in R/comb_CLS.R
 \name{comb_CLS}
 \alias{comb_CLS}
-\title{PLACEHOLDER comb_CLS}
+\title{Constrained Least Squares Forecast Combination}
 \usage{
 comb_CLS(x)
 }
@@ -19,14 +19,22 @@ Returns an object of class 'foreccomb_res'
 \item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
 \item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
 \item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
+\item Input_Data Returns the data forwarded to the method.
 }
 }
 \description{
-Computes forecast combination weights according to the standard eigenvector approach by Hsiao and Wan (2014) and produces forecasts for the test set, if provided.
+Computes constrained least squares forecast combination weights via the \emph{ForecastCombinations} package.
 }
 \details{
-The standard eigenvector approach retrieves combination weights from the sample estimated mean squared prediction error matrix
-as follows:
+The function \code{comb_CLS} is a wrapper around the constrained least squares (CLS) forecast combination implementation of the
+\emph{ForecastCombinations} package.
+
+Compared to the ordinary least squares forecast combination method \link{comb_OLS}, CLS forecast combination has the additional
+requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
+the combinations of \code{comb_CLS} are affine combinations.
+
+For more information on the method, please see \link[ForecastCombinations]{Forecast_comb} from the package \emph{ForecastCombinations}.
+
 The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 }
 \examples{
@@ -38,11 +46,8 @@ test_o<-obs[81:100]
 test_p<-preds[81:100,]
 
 data<-foreccomb(train_o, train_p, test_o, test_p)
-comb_EIG1(data)
+comb_CLS(data)
 
-}
-\references{
-Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 }
 \seealso{
 \code{\link[GeomComb]{foreccomb}},
