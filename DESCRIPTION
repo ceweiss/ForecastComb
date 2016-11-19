@@ -13,13 +13,13 @@ Imports:
     psych (>= 1.6.9)
 Suggests: 
     testthat (>= 1.0.2)
-Date: 2016-11-07
 Author: Christoph E. Weiss, Gernot R. Roetzer
 Maintainer: Christoph E. Weiss <info@ceweiss.com>
 Description: The package provides eigenvector-based (geometric) forecast
     combination methods; also includes simple approaches (simple average,
     trimmed and winsorized mean, inverse rank method) and regression-based
     combination.
+URL: https://github.com/ceweiss/GeomComb
 BugReports: https://github.com/ceweiss/GeomComb/issues
 License: GPL (>= 2)
 LazyData: true
