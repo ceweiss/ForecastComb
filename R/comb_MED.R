@@ -1,20 +1,17 @@
-#' @title Simple Average Forecast Combination
+#' @title Median Forecast Combination
 #'
-#' @description Computes forecast combination weights using simple average and produces forecasts for the test set, if provided.
+#' @description Computes a \sQuote{combined forecast} from a pool of individual model forecasts using their median at each point in time.
 #'
 #' @details
 #' Suppose \eqn{y_t} is the variable of interest, there are \eqn{N} not perfectly collinear predictors,
-#' \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}{f_t = (f_{1t}, \ldots, f_{Nt})'}. The simple average gives equal weights to all predictors:
+#' \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'}. For each point in time, the median method gives
+#' a weight of 1 to the median forecast and a weight of 0 to all other forecasts, the combined forecast is obtained by:
 #'
-#' \deqn{\mathbf{w}^{SA} = \frac{1}{N}}{w = 1/N}
+#' \deqn{\hat{y}_t = {median(\mathbf{f}_{t}})}{\hat{y}_t = median(f_t)}
 #'
-#' The combined forecast is then obtained by:
-#'
-#' \deqn{\hat{y}_t = {\mathbf{f}_{t}}'\mathbf{w}^{SA}}{\hat{y}_t = (f_t)'w}
-#'
-#' It is well-documented that simple average is a robust combination method that is hard to beat (e.g., Stock and Watson, 2004; Timmermann, 2006).
-#' This is often associated with the importance of parameter estimation error in sophisticated techniques -- a problem that simple averaging avoids.
-#' However, simple averaging may not be a suitable combination method when some of the predictors are biased (Palm and Zellner, 1992).
+#' The median method is an appealing simple, rank-based combination method that has been proposed by authors such as Armstrong (1989),
+#' McNees (1992), Hendry and Clements (2004), Stock and Watson (2004), and Timmermann (2006). It is more robust to outliers than the
+#' simple average approach.
 #'
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #'
@@ -39,16 +36,22 @@
 #' test_p<-preds[81:100,]
 #'
 #' data<-foreccomb(train_o, train_p, test_o, test_p)
-#' comb_SA(data)
+#' comb_MED(data)
 #'
 #' @seealso
 #' \code{\link{foreccomb}},
 #' \code{\link{plot.foreccomb_res}},
 #' \code{\link{summary.foreccomb_res}},
-#' \code{\link{accuracy}}
+#' \code{\link{comb_SA}},
+#' \code{\link[forecast]{accuracy}}
 #'
 #' @references
-#' Palm, F. C., and Zellner, A. (1992). To Combine or not to Combine? Issues of Combining Forecasts. \emph{Journal of Forecasting}, \bold{11(8)}, 687--701.
+#' Armstrong, J. S. (1989). Combining Forecasts: The End of the Beginning or the Beginning of the End?. \emph{International Journal of Forecasting},
+#' \bold{5(4)}, 585--588.
+#'
+#' Hendry, D. F., and Clements, M. P. (2004). Pooling of Forecasts. \emph{The Econometrics Journal}, \bold{7(1)}, 1--31.
+#'
+#' McNees, S. K. (1992). The Uses and Abuses of 'Consensus' Forecasts. \emph{Journal of Forecasting}, \bold{11(8)}, 703--710.
 #'
 #' Stock, J. H., and Watson, M. W. (2004). Combination Forecasts of Output Growth in a Seven-Country Data Set. \emph{Journal of Forecasting}, \bold{23(6)},
 #' 405--430.
@@ -59,36 +62,42 @@
 #' @keywords models
 #'
 #' @import forecast
+#' @importFrom stats median
 #'
 #' @export
-comb_SA <- function(x) {
+comb_MED <- function(x) {
+    pckg <- c("forecast")
+    temp <- unlist(lapply(pckg, require, character.only = TRUE))
+    if (!all(temp == 1))
+        stop("This function requires package \"forecast\".\n Use install.packages(\"forecast\") if it is not yet installed.\n", call. = FALSE)
+
     if (class(x) != "foreccomb")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
 
-    weights <- rep(1/ncol(prediction_matrix), ncol(prediction_matrix))
-    fitted <- as.vector(prediction_matrix %*% weights)
+    weights <- "Weights of the individual forecasts differ over time with median method"
+    fitted <- apply(prediction_matrix, 1, median)
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
-        result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Input_Data = list(Actual_Train = x$Actual_Train,
+        result <- structure(list(Method = "Median Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Input_Data = list(Actual_Train = x$Actual_Train,
             Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
         rownames(result$Accuracy_Train) <- "Training Set"
     }
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
-        pred <- as.vector(newpred_matrix %*% weights)
+        pred <- apply(newpred_matrix, 1, median)
         if (is.null(x$Actual_Test) == TRUE) {
-            result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
+            result <- structure(list(Method = "Median Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
                 Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
-            result <- structure(list(Method = "Simple Average", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
+            result <- structure(list(Method = "Median Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred,
                 Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
                   Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
