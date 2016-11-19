@@ -1,0 +1,26 @@
+Package: GeomComb
+Type: Package
+Title: (Geometric) Forecast Combination Methods
+Version: 1.0
+Depends:
+    R (>= 3.0.2)
+Imports:
+    forecast (>= 7.3),
+    ForecastCombinations (>= 1.1),
+    ggplot2 (>= 2.1.0),
+    Matrix (>= 1.2-7.1),
+    mtsdi (>= 0.3.3),
+    psych (>= 1.6.9)
+Suggests: 
+    testthat (>= 1.0.2)
+Author: Christoph E. Weiss, Gernot R. Roetzer
+Maintainer: Christoph E. Weiss <info@ceweiss.com>
+Description: The package provides eigenvector-based (geometric) forecast
+    combination methods; also includes simple approaches (simple average,
+    trimmed and winsorized mean, inverse rank method) and regression-based
+    combination.
+URL: https://github.com/ceweiss/GeomComb
+BugReports: https://github.com/ceweiss/GeomComb/issues
+License: GPL (>= 2)
+LazyData: true
+RoxygenNote: 5.0.1
