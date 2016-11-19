@@ -53,4 +53,5 @@ Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emp
 \code{\link[stats]{IQR}},
 \code{\link[base]{range}}
 }
+\keyword{ts}
 

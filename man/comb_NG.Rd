@@ -74,4 +74,5 @@ Newbold, P., and Granger, C. W. J. (1974). Experience with Forecasting Univariat
 \code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

@@ -74,4 +74,5 @@ Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emp
 \code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

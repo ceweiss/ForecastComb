@@ -71,4 +71,5 @@ Newbold, P., and Granger, C. W. J. (1974). Experience with Forecasting Univariat
 \code{\link{comb_NG}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

@@ -10,30 +10,30 @@ comb_LAD(x)
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Intercept Returns the intercept of the model.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-\item Input_Data Returns the data forwarded to the method.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the best-fit forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Intercept}{Returns the intercept of the linear regression.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
+\item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
-Computes least absolute deviation forecast combination weights via the \emph{ForecastCombinations} package.
+Computes forecast combination weights using least absolute deviation (LAD) regression.
 }
 \details{
-The function \code{comb_LAD} is a wrapper around the least absolute deviation (LAD) forecast combination implementation of the
+The function is a wrapper around the least absolute deviation (LAD) forecast combination implementation of the
 \emph{ForecastCombinations} package.
 
 The defining property of \code{comb_LAD} is that it does not minimize the squared error loss like \code{\link{comb_OLS}} and
-\code{\link{comb_CLS}}, but the absolute values of the errors. This has the advantage that it is more robust against outliers,
-that is, in the case of forecast combination, \code{comb_LAD} tends to penalize models, which have for some observations high errors,
-less harshly than the least squares methods would.
+\code{\link{comb_CLS}}, but the absolute values of the errors. This makes the method more robust to outliers -- \code{comb_LAD}
+tends to penalize models, which have high errors for some observations, less harshly than the least squares methods would.
+
+Optimal forecast combinations under general loss functions are discussed by Elliott and Timmermann (2004). The LAD method is
+described in more detail, and used in an empirical context, by Nowotarksi et al. (2014).
 
 The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 }
@@ -49,11 +49,19 @@ data<-foreccomb(train_o, train_p, test_o, test_p)
 comb_LAD(data)
 
 }
+\references{
+Elliott, G., and Timmermann, A. (2004). Optimal Forecast Combinations Under General Loss Functions and Forecast Error Distributions.
+\emph{Journal of Econometrics}, \bold{122(1)}, 47--79.
+
+Nowotarski, J., Raviv, E., Tr\"uck, S., and Weron, R. (2014). An Empirical Comparison of Alternative
+Schemes for Combining Electricity Spot Price Forecasts. \emph{Energy Economics}, \bold{46}, 395--412.
+}
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link[ForecastCombinations]{Forecast_comb}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
+\keyword{models}
 

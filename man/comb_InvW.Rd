@@ -61,4 +61,5 @@ Bates, J. M., and Granger, C. W. (1969). The Combination of Forecasts. \emph{Jou
 \code{\link{comb_BG}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

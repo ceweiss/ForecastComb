@@ -10,35 +10,39 @@ comb_OLS(x)
 \item{x}{An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
 }
 \value{
-Returns an object of class 'foreccomb_res'
-\itemize{
-\item Method Returns the used forecast combination method.
-\item Models Returns the individual input models that were used for the forecast combinations.
-\item Weights Returns the combination weights obtained by applying the combination method to the training set.
-\item Intercept Returns the intercept of the linear regression.
-\item Fitted Returns the fitted values of the combination method for the training set.
-\item Accuracy_Train Returns range of summary measures of the forecast accuracy for the training set.
-\item Forecasts_Test Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.
-\item Accuracy_Test Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.
-\item Input_Data Returns the data forwarded to the method.
-}
+Returns an object of class \code{foreccomb_res} with the following components:
+\item{Method}{Returns the best-fit forecast combination method.}
+\item{Models}{Returns the individual input models that were used for the forecast combinations.}
+\item{Weights}{Returns the combination weights obtained by applying the combination method to the training set.}
+\item{Intercept}{Returns the intercept of the linear regression.}
+\item{Fitted}{Returns the fitted values of the combination method for the training set.}
+\item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+\item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+\item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
+\item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
-Computes ordinary least squares forecast combination weights via the \emph{ForecastCombinations} package.
+Computes forecast combination weights using ordinary least squares (OLS) regression.
 }
 \details{
-The function \code{comb_CLS} is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
+The function is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
 \emph{ForecastCombinations} package.
- 
+
 The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
 estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of
 the forecasts.
 
-Suppose that there are N different predictors  \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'},
+Suppose that there are \eqn{N} not perfectly collinear predictors  \eqn{\mathbf{f}_t = (f_{1t}, \ldots, f_{Nt})'},
 then the forecast combination for one data point can be represented as:
-\deqn{y_t = b + \sum_{i=1}^{N} w_i f_i}
+\deqn{y_t = b + \sum_{i=1}^{N} w_i f_{it}}
 
-For more information on the method, please see \link[ForecastCombinations]{Forecast_comb} from the package \emph{ForecastCombinations}.
+An appealing feature of the method is its bias correction through the intercept -- even if one or more of the individual
+predictors are biased, the resulting combined forecast is unbiased. A disadvantage of the method is that it places no
+restriction on the combination weights (i.e., they do not add up to 1 and can be negative), which can make interpretation
+hard. Another issue, documented in Nowotarski et al. (2014), is the method's unstable behavior
+when predictors are highly correlated (which is the norm in forecast combination): Minor fluctuations in the sample
+can cause major shifts of the coefficient vector (\sQuote{bouncing betas}) -- often causing poor out-of-sample performance.
+This issue is addressed by the \code{\link{comb_LAD}} method that is more robust to outliers.
 
 The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 }
@@ -55,13 +59,17 @@ comb_OLS(data)
 
 }
 \references{
-Granger, C., and Ramanathan, R. (1984). Improved Methods Of Combining Forecasts. \emph{Journal of Forecasting}, \bold{3(2)}, 97--204.
+Granger, C., and Ramanathan, R. (1984). Improved Methods Of Combining Forecasts. \emph{Journal of Forecasting}, \bold{3(2)}, 197--204.
+
+Nowotarski, J., Raviv, E., Tr\"uck, S., and Weron, R. (2014). An Empirical Comparison of Alternative
+Schemes for Combining Electricity Spot Price Forecasts. \emph{Energy Economics}, \bold{46}, 395--412.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link[ForecastCombinations]{Forecast_comb}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
-\keyword{ts}
+\keyword{models}
 

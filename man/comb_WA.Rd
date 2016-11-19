@@ -4,7 +4,7 @@
 \alias{comb_WA}
 \title{Winsorized Mean Forecast Combination}
 \usage{
-comb_WA(x, trim_factor = NULL, criterion = NULL)
+comb_WA(x, trim_factor = NULL, criterion = "RMSE")
 }
 \arguments{
 \item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
@@ -12,7 +12,7 @@ comb_WA(x, trim_factor = NULL, criterion = NULL)
 \item{trim_factor}{numeric. Must be between 0 and 0.5.}
 
 \item{criterion}{If \code{trim_factor} is not specified, an optimization criterion for automated trimming needs to be defined. One of
-"MAE", "MAPE", or "RMSE".}
+"MAE", "MAPE", or "RMSE" (default).}
 }
 \value{
 Returns an object of class \code{foreccomb_res} with the following components:
@@ -79,4 +79,5 @@ Jose, V. R. R., and Winkler, R. L. (2008). Simple Robust Averages of Forecasts: 
 \code{\link{comb_TA}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

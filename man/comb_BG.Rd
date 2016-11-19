@@ -59,9 +59,10 @@ Timmermann, A. (2006). Forecast Combinations. In: Elliott, G., Granger, C. W. J.
 \bold{1}, 135--196.
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{plot.foreccomb_res}},
-\code{\link[GeomComb]{summary.foreccomb_res}},
+\code{\link{foreccomb}},
+\code{\link{plot.foreccomb_res}},
+\code{\link{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

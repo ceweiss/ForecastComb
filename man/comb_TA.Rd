@@ -4,7 +4,7 @@
 \alias{comb_TA}
 \title{Trimmed Mean Forecast Combination}
 \usage{
-comb_TA(x, trim_factor = 0.1, criterion = NULL)
+comb_TA(x, trim_factor = NULL, criterion = "RMSE")
 }
 \arguments{
 \item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
@@ -12,7 +12,7 @@ comb_TA(x, trim_factor = 0.1, criterion = NULL)
 \item{trim_factor}{numeric. Must be between 0 (simple average) and 0.5 (median).}
 
 \item{criterion}{If \code{trim_factor} is not specified, an optimization criterion for automated trimming needs to be defined. One of
-"MAE", "MAPE", or "RMSE".}
+"MAE", "MAPE", or "RMSE" (default).}
 }
 \value{
 Returns an object of class \code{foreccomb_res} with the following components:
@@ -83,4 +83,5 @@ Stock, J. H., and Watson, M. W. (2004). Combination Forecasts of Output Growth i
 \code{\link{comb_MED}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

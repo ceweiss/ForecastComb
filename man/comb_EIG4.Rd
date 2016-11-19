@@ -42,7 +42,7 @@ to the inbuilt optimization algorithm (in that case \code{ntop_pred = NULL}). If
 retained models, the user must select the optimization \code{criterion}: MAE, MAPE, or RMSE. After this trimming step, the weights, the intercept and the
 combined forecast are computed in the same way as in the \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}}.
 
-The bias-corrected trimmed eigenvector approach combines the strengths of the \cr 
+The bias-corrected trimmed eigenvector approach combines the strengths of the \cr
 \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}} and the \code{\link[=comb_EIG3]{trimmed eigenvector approach}}.
 }
 \examples{
@@ -76,4 +76,5 @@ Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emp
 \code{\link[GeomComb]{summary.foreccomb_res}},
 \code{\link[forecast]{accuracy}}
 }
+\keyword{models}
 

@@ -67,4 +67,5 @@ Timmermann, A. (2006). Forecast Combinations. In: Elliott, G., Granger, C. W. J.
 \code{\link{summary.foreccomb_res}},
 \code{\link{accuracy}}
 }
+\keyword{models}
 

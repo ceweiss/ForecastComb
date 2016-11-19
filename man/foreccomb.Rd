@@ -97,5 +97,5 @@ Dempster, A., Laird, N., and Rubin D. (1977). Maximum Likelihood from Incomplete
 \code{\link[mtsdi]{mnimput}},
 \code{\link[Matrix]{rankMatrix}}
 }
-\keyword{methods}
+\keyword{manip}
 
