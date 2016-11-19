@@ -60,6 +60,8 @@
 #' Newbold, P., and Granger, C. W. J. (1974). Experience with Forecasting Univariate Time Series and the Combination of Forecasts.
 #' \emph{Journal of the Royal Statistical Society, Series A}, \bold{137(2)}, 131--165.
 #'
+#' @keywords models
+#'
 #' @import forecast
 #'
 #' @export

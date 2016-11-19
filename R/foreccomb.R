@@ -79,7 +79,7 @@
 #' Dempster, A., Laird, N., and Rubin D. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm.
 #' \emph{Journal of the Royal Statistical Society, Series B}, \bold{39(1)}, 1--38.
 #'
-#' @keywords methods
+#' @keywords manip
 #'
 #' @importFrom mtsdi mnimput
 #' @importFrom stats is.ts

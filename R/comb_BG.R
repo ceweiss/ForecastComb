@@ -40,9 +40,9 @@
 #' comb_BG(data)
 #'
 #' @seealso
-#' \code{\link[GeomComb]{foreccomb}},
-#' \code{\link[GeomComb]{plot.foreccomb_res}},
-#' \code{\link[GeomComb]{summary.foreccomb_res}},
+#' \code{\link{foreccomb}},
+#' \code{\link{plot.foreccomb_res}},
+#' \code{\link{summary.foreccomb_res}},
 #' \code{\link[forecast]{accuracy}}
 #'
 #' @author Christoph E. Weiss and Gernot R. Roetzer
@@ -53,6 +53,7 @@
 #' Timmermann, A. (2006). Forecast Combinations. In: Elliott, G., Granger, C. W. J., and Timmermann, A. (Eds.), \emph{Handbook of Economic Forecasting},
 #' \bold{1}, 135--196.
 #'
+#' @keywords models
 #'
 #' @import forecast
 #'

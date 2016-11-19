@@ -41,6 +41,8 @@
 #'
 #' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
 #'
+#' @keywords ts
+#'
 #' @importFrom stats IQR sd
 #'
 #' @export

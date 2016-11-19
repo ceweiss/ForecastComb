@@ -23,7 +23,7 @@
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #' @param trim_factor numeric. Must be between 0 and 0.5.
 #' @param criterion If \code{trim_factor} is not specified, an optimization criterion for automated trimming needs to be defined. One of
-#' "MAE", "MAPE", or "RMSE".
+#' "MAE", "MAPE", or "RMSE" (default).
 #'
 #' @return Returns an object of class \code{foreccomb_res} with the following components:
 #' \item{Method}{Returns the used forecast combination method.}
@@ -66,11 +66,13 @@
 #' @references
 #' Jose, V. R. R., and Winkler, R. L. (2008). Simple Robust Averages of Forecasts: Some Empirical Results. \emph{International Journal of Forecasting}, \bold{24(1)}, 163--169.
 #'
+#' @keywords models
+#'
 #' @import forecast
 #' @importFrom psych winsor.mean
 #'
 #' @export
-comb_WA <- function(x, trim_factor = NULL, criterion = NULL) {
+comb_WA <- function(x, trim_factor = NULL, criterion = "RMSE") {
     if (class(x) != "foreccomb")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train
@@ -91,11 +93,13 @@ comb_WA <- function(x, trim_factor = NULL, criterion = NULL) {
             stop("Criterion for trim factor optimization must be 'MAE', 'MAPE', or 'RMSE'.", call. = FALSE)
         aux_matrix <- matrix(NA, nrow = 51, ncol = 1)
         rownames(aux_matrix) <- seq(0, 0.5, 0.01)
+        message("Optimization algorithm chooses trim factor for winsorized mean approach...")
         for (i in 1:51) {
             aux_matrix[i, ] <- accuracy(apply(prediction_matrix, 1, function(x) winsor.mean(x, trim = ((i - 1)/100), na.rm = TRUE)), observed_vector)[2]
         }
         best <- which(aux_matrix == min(aux_matrix))[1]
         trimf <- as.numeric(rownames(aux_matrix)[best])
+        message(paste0("Algorithm finished. Optimized trim factor: ", trimf))
 
         adj_pred <- apply(prediction_matrix, 1, function(x) winsor.mean(x, trim = trimf, na.rm = TRUE))
     }

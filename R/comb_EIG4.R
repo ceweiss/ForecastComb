@@ -13,7 +13,7 @@
 #' retained models, the user must select the optimization \code{criterion}: MAE, MAPE, or RMSE. After this trimming step, the weights, the intercept and the
 #' combined forecast are computed in the same way as in the \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}}.
 #'
-#' The bias-corrected trimmed eigenvector approach combines the strengths of the \cr 
+#' The bias-corrected trimmed eigenvector approach combines the strengths of the \cr
 #' \code{\link[=comb_EIG2]{bias-corrected eigenvector approach}} and the \code{\link[=comb_EIG3]{trimmed eigenvector approach}}.
 #'
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
@@ -33,7 +33,7 @@
 #' \item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
 #' \item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 #' \item{Input_Data}{Returns the data forwarded to the method.}
-#' 
+#'
 #' @author Christoph E. Weiss and Gernot R. Roetzer
 #'
 #' @examples
@@ -62,6 +62,8 @@
 #'
 #' @references
 #' Hsiao, C., and Wan, S. K. (2014). Is There An Optimal Forecast Combination? \emph{Journal of Econometrics}, \bold{178(2)}, 294--309.
+#'
+#' @keywords models
 #'
 #' @import forecast
 #'

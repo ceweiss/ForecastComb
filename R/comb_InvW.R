@@ -50,6 +50,8 @@
 #'
 #' Bates, J. M., and Granger, C. W. (1969). The Combination of Forecasts. \emph{Journal of the Operational Research Society}, \bold{20(4)}, 451--468.
 #'
+#' @keywords models
+#'
 #' @import forecast
 #'
 #' @export

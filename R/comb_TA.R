@@ -23,7 +23,7 @@
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #' @param trim_factor numeric. Must be between 0 (simple average) and 0.5 (median).
 #' @param criterion If \code{trim_factor} is not specified, an optimization criterion for automated trimming needs to be defined. One of
-#' "MAE", "MAPE", or "RMSE".
+#' "MAE", "MAPE", or "RMSE" (default).
 #'
 #' @return Returns an object of class \code{foreccomb_res} with the following components:
 #' \item{Method}{Returns the used forecast combination method.}
@@ -70,10 +70,12 @@
 #' Stock, J. H., and Watson, M. W. (2004). Combination Forecasts of Output Growth in a Seven-Country Data Set. \emph{Journal of Forecasting}, \bold{23(6)},
 #' 405--430.
 #'
+#' @keywords models
+#'
 #' @import forecast
 #'
 #' @export
-comb_TA <- function(x, trim_factor = 0.1, criterion = NULL) {
+comb_TA <- function(x, trim_factor = NULL, criterion = "RMSE") {
     if (class(x) != "foreccomb")
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     observed_vector <- x$Actual_Train
@@ -94,6 +96,7 @@ comb_TA <- function(x, trim_factor = 0.1, criterion = NULL) {
             stop("Criterion for trim factor optimization must be 'MAE', 'MAPE', or 'RMSE'.", call. = FALSE)
         aux_matrix <- matrix(NA, nrow = 51, ncol = 1)
         rownames(aux_matrix) <- seq(0, 0.5, 0.01)
+        message("Optimization algorithm chooses trim factor for trimmed mean approach...")
         for (i in 1:51) {
             if (criterion == "RMSE")
                 aux_matrix[i, ] <- accuracy(apply(prediction_matrix, 1, function(x) mean(x, trim = ((i - 1)/100), na.rm = TRUE)), observed_vector)[2]
@@ -104,6 +107,8 @@ comb_TA <- function(x, trim_factor = 0.1, criterion = NULL) {
         }
         best <- which(aux_matrix == min(aux_matrix))[1]
         trimf <- as.numeric(rownames(aux_matrix)[best])
+
+        message(paste0("Algorithm finished. Optimized trim factor: ", trimf))
 
         adj_pred <- apply(prediction_matrix, 1, function(x) mean(x, trim = trimf, na.rm = TRUE))
     }

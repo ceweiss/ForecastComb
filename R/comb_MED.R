@@ -59,6 +59,8 @@
 #' Timmermann, A. (2006). Forecast Combinations. In: Elliott, G., Granger, C. W. J., and Timmermann, A. (Eds.), \emph{Handbook of Economic Forecasting},
 #' \bold{1}, 135--196.
 #'
+#' @keywords models
+#'
 #' @import forecast
 #' @importFrom stats median
 #'
