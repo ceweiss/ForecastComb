@@ -68,7 +68,7 @@
 #' @import forecast
 #'
 #' @export
-comb_EIG4 <- function(x, ntop_pred = NULL, criterion = NULL) {
+comb_EIG4 <- function(x, ntop_pred = NULL, criterion = "RMSE") {
     pckg <- c("forecast")
     temp <- unlist(lapply(pckg, require, character.only = TRUE))
     if (!all(temp == 1))

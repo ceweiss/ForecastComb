@@ -4,7 +4,7 @@
 \alias{comb_EIG4}
 \title{Trimmed Bias-Corrected Eigenvector Forecast Combination}
 \usage{
-comb_EIG4(x, ntop_pred = NULL, criterion = NULL)
+comb_EIG4(x, ntop_pred = NULL, criterion = "RMSE")
 }
 \arguments{
 \item{x}{An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.}
