@@ -11,7 +11,7 @@ cs_dispersion(x, measure = "SD", plot = FALSE)
 
 \item{measure}{Cross-sectional dispersion measure, one of: \code{"SD"} = standard deviation (default); \code{"IQR"} = interquartile range; or \code{"Range"} = range.}
 
-\item{plot}{logical. If \code{TRUE}, evolution of cross-sectional forecast dispersion in plotted as \code{ggplot}.}
+\item{plot}{logical. If \code{TRUE}, evolution of cross-sectional forecast dispersion is plotted as \code{ggplot}.}
 }
 \value{
 Returns a vector of the evolution of cross-sectional dispersion over the sample period (using the selected dispersion measure)
