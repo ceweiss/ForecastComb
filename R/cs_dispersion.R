@@ -15,7 +15,7 @@
 #'
 #' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #' @param measure Cross-sectional dispersion measure, one of: \code{"SD"} = standard deviation (default); \code{"IQR"} = interquartile range; or \code{"Range"} = range.
-#' @param plot logical. If \code{TRUE}, evolution of cross-sectional forecast dispersion in plotted as \code{ggplot}.
+#' @param plot logical. If \code{TRUE}, evolution of cross-sectional forecast dispersion is plotted as \code{ggplot}.
 #'
 #' @return Returns a vector of the evolution of cross-sectional dispersion over the sample period (using the selected dispersion measure)
 #'
@@ -56,46 +56,53 @@ cs_dispersion <- function(x, measure = "SD", plot = FALSE) {
         forecast_data <- x$Forecasts_Train
     }
 
-    cs_data <- rep(NA, nrow(forecast_data))
+    cs_data <- list()
     if (is.null(measure))
         stop("Dispersion measure must be 'SD', 'IQR', or 'Range'.", call. = FALSE)
+    cs_data$Dispersion_Measure <- measure
+    cs_data$CS_Dispersion <- rep(NA, nrow(forecast_data))
     if (measure == "SD") {
         for (i in 1:nrow(forecast_data)) {
-            cs_data[i] <- sd(forecast_data[i, ])
+            cs_data$CS_Dispersion[i] <- sd(forecast_data[i, ])
         }
     } else {
         if (measure == "IQR") {
             for (i in 1:nrow(forecast_data)) {
-                cs_data[i] <- IQR(forecast_data[i, ])
+                cs_data$CS_Dispersion[i] <- IQR(forecast_data[i, ])
             }
         } else {
             if (measure != "Range")
                 stop("Dispersion measure must be 'SD', 'IQR', or 'Range'.", call. = FALSE)
 
             for (i in 1:nrow(forecast_data)) {
-                cs_data[i] <- max(forecast_data[i, ]) - min(forecast_data[i, ])
+                cs_data$CS_Dispersion[i] <- max(forecast_data[i, ]) - min(forecast_data[i, ])
             }
         }
     }
 
-    print(cs_data)
+    if (class(plot)!="logical") stop("Plot parameter is not logical. Must be 'TRUE' or 'FALSE'.")
 
-    if (plot == TRUE) {
+    if (plot == FALSE){
+        return(cs_data)
+    } else{
         pckg <- c("ggplot2")
         temp <- unlist(lapply(pckg, require, character.only = TRUE))
         if (!all(temp == 1))
             stop("This function requires package \"ggplot2\".\n Use install.packages(\"ggplot2\") if it is not yet installed.\n", call. = FALSE)
+        Index <- NULL  #Hack to satisfy CRAN check.
 
-        pl <- as.data.frame(matrix(NA, ncol = 2, nrow = length(cs_data)))
+        pl <- as.data.frame(matrix(NA, ncol = 2, nrow = length(cs_data$CS_Dispersion)))
         colnames(pl) <- c("Index", "Value")
         pl[, 1] <- 1:nrow(pl)
-        pl[, 2] <- cs_data
+        pl[, 2] <- cs_data$CS_Dispersion
 
-        Index <- NULL  #Hack to satisfy CRAN check.
         p <- ggplot(data = pl, aes(x = Index)) + geom_line(aes(y = pl$Value), colour = "blue", na.rm = TRUE, size = 0.5) + scale_x_continuous(breaks = round(seq(0,
-            max(pl$Index), by = nrow(pl)/10), 0)) + xlab("Index") + ylab(paste0(measure)) + theme(legend.position = "none") + ggtitle("Cross-Sectional Dispersion of Individual Forecasts") +
-            theme(plot.title = element_text(size = 16, face = "bold")) + if (!is.null(x$Forecasts_Test))
-            geom_vline(xintercept = nrow(x$Forecasts_Train), size = 1, linetype = "longdash", colour = "black")
-        p
+            max(pl$Index), by = nrow(pl)/10), 0)) + xlab("Index") + ylab(paste0(measure)) + theme(legend.position = "none") + ggtitle("Cross-Sectional Dispersion \n of Individual Forecasts") +
+            theme(plot.title = element_text(size = 16, face = "bold")) +
+            if (!is.null(x$Forecasts_Test)){
+              geom_vline(xintercept = nrow(x$Forecasts_Train), size = 1, linetype = "longdash", colour = "black")
+            }
+        print(p)
+        return(cs_data)
     }
 }
