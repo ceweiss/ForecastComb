@@ -2,7 +2,9 @@
 >(Geometric) Forecast Combination in R
 
 [![Build Status](http://www.r-pkg.org/badges/version/GeomComb)](https://cran.r-project.org/package=GeomComb)
-ahe R package *GeomComb* presents functions to pool individual model forecasts
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/GeomComb)]
+
+The R package *GeomComb* presents functions to pool individual model forecasts
 using geometric (eigenvector-based) forecast combination methods. The package
 also provides functions for simple forecast combination methods (inverse rank
 approach, simple average, median, trimmed mean, and winsorized mean - including 
