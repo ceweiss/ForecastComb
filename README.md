@@ -1,7 +1,7 @@
 # GeomComb
 >(Geometric) Forecast Combination in R
 
-(written by Chris E. Weiss and Gernot Roetzer)
+/badges[/{grand-total}]/{GeomComb}[?color={blue}]
 
 The R package *GeomComb* presents functions to pool individual model forecasts
 using geometric (eigenvector-based) forecast combination methods. The package
