@@ -1,0 +1,10 @@
+#Travis CI:
+
+language: r
+warnings_are_errors: true
+cache: packages
+
+r:
+  - oldrel
+  - release
+  - devel
