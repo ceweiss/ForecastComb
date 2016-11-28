@@ -3,6 +3,7 @@
 
 [![Build_Note](http://www.r-pkg.org/badges/version/GeomComb)](https://cran.r-project.org/package=GeomComb)
 ![Downloads_CRAN](http://cranlogs.r-pkg.org/badges/grand-total/GeomComb)
+https://travis-ci.org/ceweiss/GeomComb.svg?branch=master
 
 The R package *GeomComb* presents functions to pool individual model forecasts
 using geometric (eigenvector-based) forecast combination methods. The package
