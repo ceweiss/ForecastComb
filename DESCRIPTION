@@ -8,17 +8,18 @@ Imports:
     forecast (>= 7.3),
     ForecastCombinations (>= 1.1),
     ggplot2 (>= 2.1.0),
-    Matrix (>= 1.2-7.1),
+    Matrix (>= 1.2-6),
     mtsdi (>= 0.3.3),
     psych (>= 1.6.9)
 Suggests: 
     testthat (>= 1.0.2)
 Author: Christoph E. Weiss, Gernot R. Roetzer
 Maintainer: Christoph E. Weiss <info@ceweiss.com>
-Description: The package provides eigenvector-based (geometric) forecast
+Description: Provides eigenvector-based (geometric) forecast
     combination methods; also includes simple approaches (simple average,
-    trimmed and winsorized mean, inverse rank method) and regression-based
-    combination.
+    median, trimmed and winsorized mean, inverse rank method) and regression-based
+    combination. Tools for data pre-processing are available in order to deal with 
+    common problems in forecast combination (missingness, collinearity).
 URL: https://github.com/ceweiss/GeomComb
 BugReports: https://github.com/ceweiss/GeomComb/issues
 License: GPL (>= 2)
