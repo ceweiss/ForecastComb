@@ -1,8 +1,3 @@
-.onLoad <- function(libname,pkgname)
-{
-  suppressPackageStartupMessages(library(mtsdi))
-}
-
 .onAttach <- function(...)
 {
   version <- packageVersion("GeomComb")
