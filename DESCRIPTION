@@ -1,7 +1,7 @@
 Package: GeomComb
 Type: Package
 Title: (Geometric) Forecast Combination Methods
-Version: 1.0-1
+Version: 1.0
 Depends:
     R (>= 3.0.2)
 Imports:
