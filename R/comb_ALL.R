@@ -1,15 +1,12 @@
 comb_all <- function(x) {
   if (class(x) != "foreccomb")
     stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
-  # observed_vector <- x$Actual_Train
-  # prediction_matrix <- x$Forecasts_Train
-  # modelnames <- x$modelnames
+  observed_vector <- x$Actual_Train
+  prediction_matrix <- x$Forecasts_Train
+  modelnames <- x$modelnames
   
-  y <- as.vector(x$Actual_Train)
-  X <- as.data.frame(x$Forecasts_Train)
-  # X is a matrix of predictors
-  p <- NCOL(X)
-  TT <- NROW(X)
+  p <- NCOL(prediction_matrix)
+  TT <- NROW(prediction_matrix)
   lm0 <- h0 <- list()
   for (i in 1:p) {
     h0[[i]] <- as.matrix(combn(p, i))
@@ -18,11 +15,11 @@ comb_all <- function(x) {
   tmpfun <- function(xxx, data) {
     # apply annonymos function on each element of the list
     apply(xxx, 2, function(xx, data) {
-      lm(y ~ as.matrix(data)[, xx])
+      lm(observed_vector ~ as.matrix(data)[, xx])
     }, data=data)  # apply this lm on each column of xxx
   }
   
-  lm0 <- lapply(h0, tmpfun, data=X)
+  lm0 <- lapply(h0, tmpfun, data=prediction_matrix)
   
   # Now take the lm objects and compute the information criteria takes lm model as input
   crit_fun <- function(x) {
@@ -47,7 +44,7 @@ comb_all <- function(x) {
   # function on each element of the list
   tmpfun <- function(xxx) {
     apply(xxx, 2, function(xx) {
-      data.frame(const = rep(1, TT), X[, xx])
+      data.frame(const = rep(1, TT), prediction_matrix[, xx])
     })
   }
   
@@ -59,11 +56,10 @@ comb_all <- function(x) {
   
   tmppcrit2 <- tmpp2 <- list()
   tmpn <- length(lm0)
-  # pb <- txtProgressBar(min = 1, max = tmpn, style = 3)
+
   for (i in 1:tmpn) {
     tmpp2[[i]] <- mapply(tmpfun, listcoef = lm0[[i]], listx = tmp_obj[[i]])
     tmppcrit2[[i]] <- do.call(cbind, tmppcrit[[i]])
-    # setTxtProgressBar(pb, i)
   }
   
   predd <- do.call(cbind, tmpp2)
