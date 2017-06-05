@@ -62,7 +62,7 @@ comb_all <- function(x) {
     tmppcrit2[[i]] <- do.call(cbind, tmppcrit[[i]])
   }
   
-  predd <- do.call(cbind, tmpp2)
+  indi_fitted <- do.call(cbind, tmpp2)
   tmppcrit3 <- do.call(cbind, tmppcrit2)
   
   help_fun_w <- function(x) {
@@ -70,8 +70,17 @@ comb_all <- function(x) {
     nominatorr <- exp(-0.5 * x)
     nominatorr/sum(nominatorr)
   }
-  critw <- apply(tmppcrit3, 1, help_fun_w)
+  weigths <- apply(tmppcrit3, 1, help_fun_w)
   
-  pred0 <- predd %*% critw
-  return(list(fit = pred0, weights = critw, indi_pred = predd))
+  fitted <- indi_fitted %*% weigths
+  # pred <- indi_pred %*% weigths 
+  
+  accuracy_insample <- apply(fitted, MARGIN = 2, FUN = accuracy, x = observed_vector)
+  if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
+    result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
+                             Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+#    rownames(result$Accuracy_Train) <- "Training Set"
+  }
+
+  return(result)
 }
