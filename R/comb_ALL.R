@@ -4,83 +4,113 @@ comb_all <- function(x) {
   observed_vector <- x$Actual_Train
   prediction_matrix <- x$Forecasts_Train
   modelnames <- x$modelnames
+  ic_name_vec <- c("aic", "aicc", "bic",  "hq")
   
   p <- NCOL(prediction_matrix)
   TT <- NROW(prediction_matrix)
-  lm0 <- h0 <- list()
+  
+  ndiff_models <- 2^p - 1
+  weights <- matrix(0, ndiff_models, 4)
+  indiv_fitted <- matrix(0, length(observed_vector), ndiff_models)
+  
+  weights_idx <- 1
+  indiv_fitted_idx <- 1
+  
+  conduct_predict <- !is.null(x$Forecasts_Test)
+    
+  if (conduct_predict) {
+    newpred_matrix <- x$Forecasts_Test
+    indiv_pred <- matrix(0, NROW(newpred_matrix), ndiff_models)
+    indiv_pred_idx <- 1
+  }
+    
   for (i in 1:p) {
-    h0[[i]] <- as.matrix(combn(p, i))
+    combinations <- as.matrix(combn(p, i))
+    ncombs <- ncol(combinations)
+    
+    lin_models <- apply(combinations, 2, function(combs, data) {
+      lm(observed_vector ~ as.matrix(data)[, combs])
+    }, data=prediction_matrix)
+    
+    end_weights_idx <- weights_idx + ncombs - 1
+    weights[weights_idx:end_weights_idx,] <- t(sapply(lin_models, crit_fun))
+    weights_idx <- end_weights_idx + 1
+    
+    end_indiv_fitted_idx <- indiv_fitted_idx + ncombs - 1
+    indiv_fitted[, indiv_fitted_idx:end_indiv_fitted_idx] <- mapply(comp_fitted, lin_models, 1:ncombs, 
+                                                                    MoreArgs = list(data = prediction_matrix, 
+                                                                                    combinations = combinations))
+    indiv_fitted_idx <- end_indiv_fitted_idx + 1
+    
+    if (conduct_predict) {
+      end_indiv_pred_idx <- indiv_pred_idx + ncombs - 1
+      indiv_pred[, indiv_pred_idx:end_indiv_pred_idx] <- mapply(comp_predict, lin_models, 1:ncombs, 
+                                                                MoreArgs = list(newdata = newpred_matrix, 
+                                                                                combinations = combinations))
+      indiv_pred_idx <- end_indiv_pred_idx + 1  
+    }
   }
   
-  tmpfun <- function(xxx, data) {
-    # apply annonymos function on each element of the list
-    apply(xxx, 2, function(xx, data) {
-      lm(observed_vector ~ as.matrix(data)[, xx])
-    }, data=data)  # apply this lm on each column of xxx
-  }
+  weigths <- apply(weights, MARGIN = 2, FUN = comp_normalized_weights)
+  colnames(weights) <- ic_name_vec
   
-  lm0 <- lapply(h0, tmpfun, data=prediction_matrix)
-  
-  # Now take the lm objects and compute the information criteria takes lm model as input
-  crit_fun <- function(x) {
-    k <- length(x$coef)  # will include a constant
-    TT <- length(x$res)
-    aic <- as.numeric(-2 * logLik(x) + 2 * k)
-    aicc <- aic + 2 * (k + 1) * (k + 2)/(TT - k - 1)
-    bic <- as.numeric(-2 * logLik(x) + log(TT) * k)
-    hq <- as.numeric(-2 * logLik(x) + log(log(TT)) * k)
-    return(list(aic = aic, aicc = aicc, bic = bic, hq = hq))
-  }
-  
-  crit_fun_wrap <- function(x) {
-    lapply(x, crit_fun)  # apply this function on each element of the list of lm0
-  }
-  
-  # The following line gives list of lists each list is a list of 4 criteria for each lm
-  # object (corrsponding to the different combinations)
-  tmppcrit <- lapply(lm0, crit_fun_wrap)
-  
-  # Function to create the X matrix from the different combinations apply annonymos
-  # function on each element of the list
-  tmpfun <- function(xxx) {
-    apply(xxx, 2, function(xx) {
-      data.frame(const = rep(1, TT), prediction_matrix[, xx])
-    })
-  }
-  
-  tmp_obj <- lapply(h0, tmpfun)
-  
-  tmpfun <- function(listcoef, listx) {
-    t(listcoef$coef %*% t(listx))
-  }
-  
-  tmppcrit2 <- tmpp2 <- list()
-  tmpn <- length(lm0)
+  fitted <- indiv_fitted %*% weigths
+  colnames(fitted) <- ic_name_vec
 
-  for (i in 1:tmpn) {
-    tmpp2[[i]] <- mapply(tmpfun, listcoef = lm0[[i]], listx = tmp_obj[[i]])
-    tmppcrit2[[i]] <- do.call(cbind, tmppcrit[[i]])
-  }
-  
-  indi_fitted <- do.call(cbind, tmpp2)
-  tmppcrit3 <- do.call(cbind, tmppcrit2)
-  
-  help_fun_w <- function(x) {
-    x <- scale(unlist(x), scale = T)  # scaling is necessary to escape zero
-    nominatorr <- exp(-0.5 * x)
-    nominatorr/sum(nominatorr)
-  }
-  weigths <- apply(tmppcrit3, 1, help_fun_w)
-  
-  fitted <- indi_fitted %*% weigths
-  # pred <- indi_pred %*% weigths 
-  
-  accuracy_insample <- apply(fitted, MARGIN = 2, FUN = accuracy, x = observed_vector)
-  if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
+  accuracy_insample <- apply(fitted, MARGIN = 2, FUN = accuracy, x = observed_vector)[1:5,]
+  rownames(accuracy_insample) <- c("ME", "RMSE", "MAE", "MPE", "MAPE")
+  colnames(accuracy_insample) <- ic_name_vec
+  if(!conduct_predict & is.null(x$Actual_Test)) {
     result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
                              Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
-#    rownames(result$Accuracy_Train) <- "Training Set"
   }
-
+  
+  if(conduct_predict) {
+    pred <- indiv_pred %*% weigths 
+    if(is.null(x$Actual_Test) == TRUE) {
+      result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
+                               Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+    } else {
+      newobs_vector <- x$Actual_Test
+      accuracy_outsample <- apply(pred, MARGIN = 2, FUN = accuracy, x = newobs_vector)[1:5,]
+      rownames(accuracy_outsample) <- c("ME", "RMSE", "MAE", "MPE", "MAPE")
+      colnames(accuracy_outsample) <- ic_name_vec
+      result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
+                               Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                                                                                            Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+    }
+  }
+  
   return(result)
+}
+
+# Computes the information criterions for weighting
+crit_fun <- function(x) {
+  k <- length(x$coef)  # will include a constant
+  TT <- length(x$res)
+  aic <- as.numeric(-2 * logLik(x) + 2 * k)
+  aicc <- aic + 2 * (k + 1) * (k + 2)/(TT - k - 1)
+  bic <- as.numeric(-2 * logLik(x) + log(TT) * k)
+  hq <- as.numeric(-2 * logLik(x) + log(log(TT)) * k)
+  return(c(aic = aic, aicc = aicc, bic = bic, hq = hq))
+}
+
+comp_fitted <- function(lin_model, comb_idx, data, combinations) {
+  TT <- length(lin_model$res)
+  comb <- combinations[,comb_idx]
+  fitted <- cbind(rep(1, TT), data[, comb]) %*% lin_model$coef
+  return(fitted)
+}
+
+comp_predict <- function(lin_model, comb_idx, newdata, combinations) {
+  TT <- NROW(newdata)
+  comb <- combinations[,comb_idx]
+  pred <- cbind(rep(1, TT), newdata[, comb]) %*% lin_model$coef
+  return(pred)
+}
+
+comp_normalized_weights <- function(x) {
+  x <- scale(unlist(x), scale = T)  # scaling is necessary to escape zero
+  nominatorr <- exp(-0.5 * x)
+  nominatorr/sum(nominatorr)
 }
