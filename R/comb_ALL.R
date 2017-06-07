@@ -1,3 +1,66 @@
+#' @title All Possible Combinations Forecast Averaging
+#'
+#' @description Combine different forecasts using complete subset regressions. Apart from the simple averaging, weights based on information criteria (AIC, corrected AIC, Hannan Quinn and BIC).
+#'
+#' @details
+#' OLS forecast combination is based on \deqn{ obs_t = const + \sum_{i = 1}^p w_{i} \widehat{obs}_{it} + e_t, } where \eqn{obs} is the observed values and \eqn{\widehat{obs}} is the forecast, one out of the \eqn{p} forecasts available.
+#' 
+#' The function computes the complete subset regressions. So a matrix of forecasts based on all possible subsets of \code{fhat} is returned.
+#' 
+#' Those forecasts can later be cross-sectionally averaged (averaged over rows) to create a single combined forecast using weights which are based on the information criteria of the different individual regression, rather than a simple average.
+#' 
+#' Additional weight-vectors which are based on different information criteria are also returned. This is in case the user would like to perform the frequensit version of forecast averaging (see references for more details).
+#' 
+#' Although the function is geared towards forecast averaging, it can be used in any other application as a generic complete subset regression.
+#'
+#' @param x An object of class \code{foreccomb}. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
+#'
+#' @return Returns an object of class \code{foreccomb_res} with the following components:
+#' \item{Method}{Returns the used forecast combination method.}
+#' \item{Models}{Returns the individual input models that were used for the forecast combinations.}
+#' \item{Weights}{Returns the combination weights based on the different information criteria.}
+#' \item{Fitted}{Returns the fitted values for each information criterion.}
+#' \item{Accuracy_Train}{Returns range of summary measures of the forecast accuracy for the training set.}
+#' \item{Forecasts_Test}{Returns forecasts produced by the combination method for the test set. Only returned if input included a forecast matrix for the test set.}
+#' \item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
+#' \item{Input_Data}{Returns the data forwarded to the method.}
+#'
+#' @author Eran Raviv  and Gernot R. Roetzer
+#'
+#' @examples
+#' obs <- rnorm(100)
+#' preds <- matrix(rnorm(1000, 1), 100, 10)
+#' train_o<-obs[1:80]
+#' train_p<-preds[1:80,]
+#' test_o<-obs[81:100]
+#' test_p<-preds[81:100,]
+#'
+#' data<-foreccomb(train_o, train_p, test_o, test_p)
+#' comb_ALL(data)
+#'
+#' @seealso
+#' \code{\link{foreccomb}},
+#' \code{\link{plot.foreccomb_res}},
+#' \code{\link{summary.foreccomb_res}},
+#' \code{\link{comb_NG}},
+#' \code{\link[forecast]{accuracy}}
+#'
+#' @references
+#' Hansen, B. (2008). Least-squares forecast averaging \emph{Journal of Econometrics}, \bold{146(2)}, 342--350.
+#'
+#' Kapetanios, G., Labhard V., Price, S. (2008). Forecasting Using Bayesian and Information-Theoretic Model Averaging.
+#' \emph{Journal of Business & Economic Statistics}, \bold{26(1)}.
+#' 
+#' Koenker R. (2005). \emph{Quantile Regression. Cambridge University Press}.
+#'
+#' Graham, E., Garganob, A., Timmermann, A. (2013). Complete subset regressions. 
+#' \emph{Journal of Econometrics}, \bold{177(2)}, 357--373. }
+#'
+#' @keywords models
+#'
+#' @import forecast
+#'
+#' @export
 comb_ALL <- function(x) {
   if (class(x) != "foreccomb")
     stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
