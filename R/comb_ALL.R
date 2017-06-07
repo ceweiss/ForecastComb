@@ -1,4 +1,4 @@
-comb_all <- function(x) {
+comb_ALL <- function(x) {
   if (class(x) != "foreccomb")
     stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
   observed_vector <- x$Actual_Train
