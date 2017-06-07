@@ -37,9 +37,7 @@ comb_all <- function(x) {
     weights_idx <- end_weights_idx + 1
     
     end_indiv_fitted_idx <- indiv_fitted_idx + ncombs - 1
-    indiv_fitted[, indiv_fitted_idx:end_indiv_fitted_idx] <- mapply(comp_fitted, lin_models, 1:ncombs, 
-                                                                    MoreArgs = list(data = prediction_matrix, 
-                                                                                    combinations = combinations))
+    indiv_fitted[, indiv_fitted_idx:end_indiv_fitted_idx] <- sapply(lin_models, FUN = fitted.values)
     indiv_fitted_idx <- end_indiv_fitted_idx + 1
     
     if (conduct_predict) {
@@ -66,7 +64,8 @@ comb_all <- function(x) {
   }
   
   if(conduct_predict) {
-    pred <- indiv_pred %*% weigths 
+    pred <- indiv_pred %*% weigths
+    colnames(pred) <- ic_name_vec
     if(is.null(x$Actual_Test) == TRUE) {
       result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
                                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
@@ -93,13 +92,6 @@ crit_fun <- function(x) {
   bic <- as.numeric(-2 * logLik(x) + log(TT) * k)
   hq <- as.numeric(-2 * logLik(x) + log(log(TT)) * k)
   return(c(aic = aic, aicc = aicc, bic = bic, hq = hq))
-}
-
-comp_fitted <- function(lin_model, comb_idx, data, combinations) {
-  TT <- length(lin_model$res)
-  comb <- combinations[,comb_idx]
-  fitted <- cbind(rep(1, TT), data[, comb]) %*% lin_model$coef
-  return(fitted)
 }
 
 comp_predict <- function(lin_model, comb_idx, newdata, combinations) {
