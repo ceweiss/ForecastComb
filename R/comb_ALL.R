@@ -54,12 +54,14 @@
 #' Koenker R. (2005). \emph{Quantile Regression. Cambridge University Press}.
 #'
 #' Graham, E., Garganob, A., Timmermann, A. (2013). Complete subset regressions. 
-#' \emph{Journal of Econometrics}, \bold{177(2)}, 357--373. }
+#' \emph{Journal of Econometrics}, \bold{177(2)}, 357--373. 
 #'
 #' @keywords models
 #'
 #' @import forecast
-#'
+#' @importFrom stats fitted.values lm logLik
+#' @importFrom utils combn
+#' 
 #' @export
 comb_ALL <- function(x) {
   if (class(x) != "foreccomb")
