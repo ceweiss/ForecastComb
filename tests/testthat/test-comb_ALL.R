@@ -1,13 +1,13 @@
-context("comb_ALL")
+context("comb_CSR")
 
-test_that("Forward wrong input to comb_ALL", {
-  expect_error(comb_ALL(1))
-  expect_error(comb_ALL("abs"))
-  expect_error(comb_ALL(list(a=1, b=2)))
-  expect_error(comb_ALL(NULL))
-  expect_error(comb_ALL(NA))
-  expect_error(comb_ALL(Inf))
-  expect_error(comb_ALL(-Inf))
+test_that("Forward wrong input to comb_CSR", {
+  expect_error(comb_CSR(1))
+  expect_error(comb_CSR("abs"))
+  expect_error(comb_CSR(list(a=1, b=2)))
+  expect_error(comb_CSR(NULL))
+  expect_error(comb_CSR(NA))
+  expect_error(comb_CSR(Inf))
+  expect_error(comb_CSR(-Inf))
 })
 
 test_that("Check for correct class type and accuracy, when only train set is used", {
@@ -18,7 +18,7 @@ test_that("Check for correct class type and accuracy, when only train set is use
   train_p<-preds[1:80,]
   
   data<-foreccomb(train_o, train_p)
-  result<-comb_ALL(data)
+  result<-comb_CSR(data)
   
   expect_is(result, "foreccomb_res")
   expect_length(result, 6)
@@ -37,7 +37,7 @@ test_that( "Check for correct class type and accuracy, when Forecast_Test is pro
   test_p<-preds[81:100,]
   
   data<-foreccomb(train_o, train_p, newpreds =  test_p)
-  result<-comb_ALL(data)
+  result<-comb_CSR(data)
   
   expect_is(result, "foreccomb_res")
   expect_length(result, 7)
@@ -57,7 +57,7 @@ test_that( "Check for correct class type and accuracy, when test set is used", {
   test_p<-preds[81:100,]
   
   data<-foreccomb(train_o, train_p, test_o, test_p)
-  result<-comb_ALL(data)
+  result<-comb_CSR(data)
   
   expect_is(result, "foreccomb_res")
   expect_length(result, 8)
