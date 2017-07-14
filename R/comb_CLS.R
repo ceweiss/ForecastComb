@@ -3,8 +3,8 @@
 #' @description Computes forecast combination weights using constrained least squares (CLS) regression.
 #'
 #' @details
-#' The function is a wrapper around the constrained least squares (CLS) forecast combination implementation of the
-#' \emph{ForecastCombinations} package.
+#' The function is integrates the constrained least squares (CLS) forecast combination implementation of the
+#' \emph{ForecastCombinations} packages. The implementation has improved robustness regarding multicollinearity.
 #'
 #' Compared to the \code{\link[=comb_OLS]{ordinary least squares forecast combination}} method, CLS forecast combination has the additional
 #' requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
@@ -64,7 +64,7 @@
 #'
 #' @keywords models
 #'
-#' @import forecast ForecastCombinations
+#' @import Matrix forecast quadprog
 #'
 #' @export
 comb_CLS <- function(x) {
@@ -74,10 +74,20 @@ comb_CLS <- function(x) {
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
 
-    regression <- Forecast_comb(observed_vector, prediction_matrix, Averaging_scheme = "cls")
+    mat_err <- observed_vector - prediction_matrix
+    TT <- NROW(prediction_matrix)
+    p <- NCOL(prediction_matrix)
+    pred <- NULL
+    
+    Rinv <- solve(safe_chol(t(prediction_matrix) %*% prediction_matrix))
+    C <- cbind(rep(1, p), diag(p))
+    b = c(1, rep(0, p))
+    d = t(observed_vector) %*% prediction_matrix
+    qp1 = solve.QP(Dmat= Rinv, factorized= TRUE, dvec= d, Amat= C, bvec = b, meq = 1)
+    weights = qp1$sol
 
-    weights <- regression$weights[1:length(regression$weights)]
-    fitted <- as.vector(regression$fitted[, 1])
+    fitted <- as.vector(weights %*% t(prediction_matrix))
+    
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
@@ -88,8 +98,7 @@ comb_CLS <- function(x) {
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
-        regression_aux <- Forecast_comb(observed_vector, prediction_matrix, fhat_new = newpred_matrix, Averaging_scheme = "cls")
-        pred <- as.vector(regression_aux$pred[, 1])
+        pred <- as.vector(weights %*% t(newpred_matrix))
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Constrained Least Squares Regression", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
                 Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
@@ -105,4 +114,8 @@ comb_CLS <- function(x) {
         }
     }
     return(result)
+}
+
+safe_chol <- function(X) {
+  return(tryCatch(chol(X),  error = function(e){chol(nearPD(x = X)$mat)}))
 }

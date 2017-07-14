@@ -10,10 +10,11 @@ Imports:
     ggplot2 (>= 2.1.0),
     Matrix (>= 1.2-6),
     mtsdi (>= 0.3.3),
-    psych (>= 1.6.9)
+    psych (>= 1.6.9),
+    quadprog (>= 1.5-5)
 Suggests: 
     testthat (>= 1.0.2)
-Author: Christoph E. Weiss, Gernot R. Roetzer
+Author: Christoph E. Weiss, Gernot R. Roetzer, Eran Raviv 
 Maintainer: Christoph E. Weiss <info@ceweiss.com>
 Description: Provides eigenvector-based (geometric) forecast
     combination methods; also includes simple approaches (simple average,

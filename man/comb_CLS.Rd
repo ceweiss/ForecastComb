@@ -24,8 +24,8 @@ Returns an object of class \code{foreccomb_res} with the following components:
 Computes forecast combination weights using constrained least squares (CLS) regression.
 }
 \details{
-The function is a wrapper around the constrained least squares (CLS) forecast combination implementation of the
-\emph{ForecastCombinations} package.
+The function is integrates the constrained least squares (CLS) forecast combination implementation of the
+\emph{ForecastCombinations} packages. The implementation has improved robustness regarding multicollinearity.
 
 Compared to the \code{\link[=comb_OLS]{ordinary least squares forecast combination}} method, CLS forecast combination has the additional
 requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
