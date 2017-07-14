@@ -98,7 +98,7 @@ cs_dispersion <- function(x, measure = "SD", plot = FALSE) {
 
         p <- ggplot(data = pl, aes(x = Index)) + geom_line(aes(y = pl$Value), colour = "blue", na.rm = TRUE, size = 0.5) + scale_x_continuous(breaks = round(seq(0,
             max(pl$Index), by = nrow(pl)/10), 0)) + xlab("Index") + ylab(paste0(measure)) + theme(legend.position = "none") + ggtitle("Cross-Sectional Dispersion \n of Individual Forecasts") +
-            theme(plot.title = element_text(size = 16, face = "bold")) +
+            theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 16, face = "bold")) +
             if (!is.null(x$Forecasts_Test)){
               geom_vline(xintercept = nrow(x$Forecasts_Train), size = 1, linetype = "longdash", colour = "black")
             }
