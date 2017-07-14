@@ -37,6 +37,8 @@
 #' \item{Accuracy_Test}{Returns range of summary measures of the forecast accuracy for the test set. Only returned if input included a forecast matrix and a vector of actual values for the test set.}
 #' \item{Input_Data}{Returns the data forwarded to the method.}
 #'
+#' @author Eran Raviv, Gernot R. Roetzer and Christoph E. Weiss
+#'
 #' @examples
 #' obs <- rnorm(100)
 #' preds <- matrix(rnorm(1000, 1), 100, 10)
