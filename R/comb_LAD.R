@@ -15,6 +15,8 @@
 #'
 #' The results are stored in an object of class 'foreccomb_res', for which separate plot and summary functions are provided.
 #'
+#' @author Eran Raviv, Gernot R. Roetzer and Christoph E. Weiss
+#'
 #' @param x An object of class 'foreccomb'. Contains training set (actual values + matrix of model forecasts) and optionally a test set.
 #'
 #' @return Returns an object of class \code{foreccomb_res} with the following components:
