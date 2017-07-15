@@ -41,15 +41,23 @@ summary.foreccomb_res <- function(object, ...) {
 
     ans$Method <- object$Method
 
-    if (!is.character(object$Weights)) {
+    if(is.null(dim(object$Weights))){
         ans$weight <- matrix(object$Weights, ncol = 1)
         colnames(ans$weight) <- "Combination Weight"
         rownames(ans$weight) <- object$Models
+      }
+      else{
+        ans$weight <- matrix(object$Weights[dim(object$Weights)[1],], ncol = 1)
+        colnames(ans$weight) <- "Combination Weight (End of Test Set)"
+        rownames(ans$weight) <- object$Models
+      }
     } else {
         ans$weight <- "Weights of the individual forecasts differ over time with trimmed mean"
     }
 
     ans$Intercept <- object$Intercept
+    if(!is.null(ans$Intercept) & length(ans$Intercept)>1)
+      ans$Intercept <- ans$Intercept[length(ans$Intercept)]
 
     ans$accuracy <- as.data.frame(rbind(object$Accuracy_Train[1:5], object$Accuracy_Test))
     rownames(ans$accuracy)[1] <- "Training Set"

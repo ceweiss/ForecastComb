@@ -40,7 +40,12 @@ plot.foreccomb_res <- function(x, which=1,...) {
         stop("Data must be class 'foreccomb'. See ?foreccomb, to bring data in correct format.", call. = FALSE)
     method <- x$Method
     models <- x$Models
+    rolling<-FALSE
     weights <- x$Weights
+    if (!is.null(dim(weights))){
+      rolling <- TRUE
+      weights <- colMeans(weights)
+    }
     fit <- x$Fitted
     forec <- x$Forecasts_Test
     observed_vector <- x$Input_Data$Actual_Train
@@ -60,7 +65,7 @@ plot.foreccomb_res <- function(x, which=1,...) {
         p <- ggplot(data = pl, aes(x = Index)) + geom_line(aes(y = pl$Actual, colour = "ACTUAL"), size = 0.5) + geom_line(aes(y = pl$Combined_Fit, colour = "COMBINED (FIT)"),
             size = 0.8) + scale_x_continuous(breaks = round(seq(0, max(pl$Index), by = nrow(pl)/10), 0)) + scale_colour_manual(name = "Series", values = cols) + guides(colour = guide_legend(override.aes = list(size = c(0.5,
             0.8)))) + xlab("Index") + ylab(paste0(method, "\n Fitted Values/Forescasts")) + ggtitle(paste0(method, " Forecast Combination \n Actual vs. Fitted/Test Set Forecasts")) +
-            theme(plot.title = element_text(size = 16, face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold"))
+            theme(plot.title = element_text(hjust = 0.5)) +theme(plot.title = element_text(size = 16, face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold"))
         p
     } else {
 
@@ -79,8 +84,8 @@ plot.foreccomb_res <- function(x, which=1,...) {
                 na.rm = TRUE, size = 0.8) + geom_line(aes(y = c(pl$Combined_Forecast), colour = "COMBINED (FORECAST)"), na.rm = TRUE, size = 1.5) + scale_x_continuous(breaks = round(seq(0,
                 max(pl$Index), by = nrow(pl)/10), 0)) + scale_colour_manual(name = "Series", values = cols) + guides(colour = guide_legend(override.aes = list(size = c(0.5,
                 0.8, 1.5)))) + xlab("Index") + ylab(paste0(method, "\n Fitted Values/Forecasts")) + ggtitle(paste0(method, " Forecast Combination \n Actual vs. Fitted/Test Set Forecast")) +
-                theme(plot.title = element_text(size = 16, face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold")) + geom_vline(xintercept = length(observed_vector),
-                size = 1, linetype = "longdash", colour = "black")
+                theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 16, face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold")) +
+                geom_vline(xintercept = length(observed_vector), size = 1, linetype = "longdash", colour = "black")
             p
         } else {
             pl <- as.data.frame(matrix(NA, ncol = 4, nrow = (length(observed_vector) + length(forec))))
@@ -94,8 +99,8 @@ plot.foreccomb_res <- function(x, which=1,...) {
             p <- ggplot(data = pl, aes(x = Index)) + geom_line(aes(y = pl$Actual, colour = "ACTUAL"), na.rm = TRUE, size = 0.5) + geom_line(aes(y = c(pl$Combined_Fit),
                 colour = "COMBINED (FIT)"), na.rm = TRUE, size = 0.8) + geom_line(aes(y = c(pl$Combined_Forecast), colour = "COMBINED (FORECAST)"), na.rm = TRUE, size = 1.5) +
                 scale_x_continuous(breaks = round(seq(0, max(pl$Index), by = nrow(pl)/10), 0)) + scale_colour_manual(name = "Series", values = cols) + guides(colour = guide_legend(override.aes = list(size = c(0.5,
-                0.8, 1.5)))) + xlab("Index") + ylab(paste0(method, "\n Fitted Values")) + ggtitle(paste0(method, " Forecast Combination \n Actual vs. Fitted")) + theme(plot.title = element_text(size = 16,
-                face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold")) + geom_vline(xintercept = length(observed_vector),
+                0.8, 1.5)))) + xlab("Index") + ylab(paste0(method, "\n Fitted Values")) + ggtitle(paste0(method, " Forecast Combination \n Actual vs. Fitted")) + theme(plot.title = element_text(hjust = 0.5)) +
+                theme(plot.title = element_text(size = 16, face = "bold")) + theme(legend.title = element_text(colour = "black", size = 12, face = "bold")) + geom_vline(xintercept = length(observed_vector),
                 size = 1, linetype = "longdash", colour = "black")
             p
         }
@@ -103,8 +108,13 @@ plot.foreccomb_res <- function(x, which=1,...) {
     } else {
       if (which == 2){
         if (is.numeric(weights)){
-          graphics::barplot(weights, main=paste0(method, "\nCombination Weights"), ylab="Combination Weight",
-                            names.arg = models, ylim=c(min(1.1*min(weights), 0), 1.1*max(weights)), las=3, cex.names=0.8)
+          if(!rolling){
+            graphics::barplot(weights, main=paste0(method, "\nCombination Weights"), ylab="Combination Weight",
+                              names.arg = models, ylim=c(min(1.1*min(weights), 0), 1.1*max(weights)), las=3, cex.names=0.8)
+          } else{
+            graphics::barplot(weights, main=paste0(method, "\n Average Rolling Combination Weights"), ylab="Average Combination Weight",
+                              names.arg = models, ylim=c(min(1.1*min(weights), 0), 1.1*max(weights)), las=3, cex.names=0.8)
+          }
         } else {
         message(paste0(method, " produces time-varying weights among input models. Cannot plot weights."))
       }

@@ -72,9 +72,9 @@ comb_OLS <- function(x) {
     observed_vector <- x$Actual_Train
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
-    
+
     lin_model <- lm(observed_vector ~ prediction_matrix)
-  
+
     weights <- unname(lin_model$coef[-1])
     intercept <- unname(lin_model$coef[1])
     fitted <- unname(fitted(lin_model))
