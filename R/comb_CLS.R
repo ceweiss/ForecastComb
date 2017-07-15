@@ -4,7 +4,7 @@
 #'
 #' @details
 #' The function integrates the constrained least squares (CLS) forecast combination implementation of the
-#' \emph{ForecastCombinations} packages into GeomComb. The implementation has improved robustness regarding multicollinearity.
+#' \emph{ForecastCombinations} package into GeomComb. The implementation has improved robustness regarding multicollinearity.
 #'
 #' Compared to the \code{\link[=comb_OLS]{ordinary least squares forecast combination}} method, CLS forecast combination has the additional
 #' requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
@@ -81,7 +81,7 @@ comb_CLS <- function(x) {
     b = c(1, rep(0, p))
     d = t(observed_vector) %*% prediction_matrix
     qp1 = solve.QP(Dmat= Rinv, factorized= TRUE, dvec= d, Amat= C, bvec = b, meq = 1)
-    weights = qp1$sol
+    weights = unname(qp1$sol)
 
     fitted <- as.vector(weights %*% t(prediction_matrix))
     accuracy_insample <- accuracy(fitted, observed_vector)

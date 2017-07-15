@@ -25,8 +25,8 @@ Returns an object of class \code{foreccomb_res} with the following components:
 Computes forecast combination weights using least absolute deviation (LAD) regression.
 }
 \details{
-The function is a wrapper around the least absolute deviation (LAD) forecast combination implementation of the
-\emph{ForecastCombinations} package.
+The function integrates the least absolute deviation (LAD) forecast combination implementation of the
+\emph{ForecastCombinations} package into GeomComb.
 
 The defining property of \code{comb_LAD} is that it does not minimize the squared error loss like \code{\link{comb_OLS}} and
 \code{\link{comb_CLS}}, but the absolute values of the errors. This makes the method more robust to outliers -- \code{comb_LAD}

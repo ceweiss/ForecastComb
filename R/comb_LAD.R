@@ -3,8 +3,8 @@
 #' @description Computes forecast combination weights using least absolute deviation (LAD) regression.
 #'
 #' @details
-#' The function is a wrapper around the least absolute deviation (LAD) forecast combination implementation of the
-#' \emph{ForecastCombinations} package.
+#' The function integrates the least absolute deviation (LAD) forecast combination implementation of the
+#' \emph{ForecastCombinations} package into GeomComb.
 #'
 #' The defining property of \code{comb_LAD} is that it does not minimize the squared error loss like \code{\link{comb_OLS}} and
 #' \code{\link{comb_CLS}}, but the absolute values of the errors. This makes the method more robust to outliers -- \code{comb_LAD}
@@ -55,7 +55,7 @@
 #'
 #' @keywords models
 #'
-#' @import forecast ForecastCombinations
+#' @import forecast quantreg
 #'
 #' @export
 comb_LAD <- function(x) {
@@ -65,11 +65,11 @@ comb_LAD <- function(x) {
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
 
-    regression <- Forecast_comb(observed_vector, prediction_matrix, Averaging_scheme = "robust")
+    rq_model <- rq(observed_vector ~ prediction_matrix)
 
-    weights <- regression$weights[2:length(regression$weights)]
-    intercept <- regression$weights[1]
-    fitted <- as.vector(regression$fitted[, 1])
+    weights <- unname(rq_model$coef[-1])
+    intercept <- unname(rq_model$coef[1])
+    fitted <- unname(fitted(rq_model))
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
@@ -80,8 +80,7 @@ comb_LAD <- function(x) {
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
-        regression_aux <- Forecast_comb(observed_vector, prediction_matrix, fhat_new = newpred_matrix, Averaging_scheme = "robust")
-        pred <- as.vector(regression_aux$pred[, 1])
+        pred <- as.vector(rq_model$coef %*% t(cbind(1, newpred_matrix)))
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Robust Regression (QR)", Models = modelnames, Weights = weights, Intercept = intercept, Fitted = fitted, Accuracy_Train = accuracy_insample,
                 Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))

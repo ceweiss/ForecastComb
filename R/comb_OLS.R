@@ -4,7 +4,7 @@
 #'
 #' @details
 #' The function integrates the ordinary least squares (OLS) forecast combination implementation of the
-#' \emph{ForecastCombinations} packages into GeomComb. The implementation has improved robustness regarding multicollinearity.
+#' \emph{ForecastCombinations} package into GeomComb.
 #'
 #' The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
 #' estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of
@@ -75,8 +75,8 @@ comb_OLS <- function(x) {
     
     lin_model <- lm(observed_vector ~ prediction_matrix)
   
-    weights <- lin_model$coef[-1]
-    intercept <- lin_model$coef[1]
+    weights <- unname(lin_model$coef[-1])
+    intercept <- unname(lin_model$coef[1])
     fitted <- unname(fitted(lin_model))
     accuracy_insample <- accuracy(fitted, observed_vector)
 

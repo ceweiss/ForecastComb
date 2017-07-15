@@ -6,12 +6,12 @@ Depends:
     R (>= 3.0.2)
 Imports:
     forecast (>= 7.3),
-    ForecastCombinations (>= 1.1),
     ggplot2 (>= 2.1.0),
     Matrix (>= 1.2-6),
     mtsdi (>= 0.3.3),
     psych (>= 1.6.9),
-    quadprog (>= 1.5-5)
+    quadprog (>= 1.5-5),
+    quantreg (>= 5.29)
 Suggests: 
     testthat (>= 1.0.2)
 Author: Christoph E. Weiss, Gernot R. Roetzer, Eran Raviv 
