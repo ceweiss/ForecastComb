@@ -81,7 +81,7 @@ rolling_combine<-function(x, comb_method, criterion=NULL){
   if(comb_method=="comb_CSR")
     stop("Rolling Forecast Combination method is not available for Complete Subset Regression.", call. = FALSE)
 
-  if(is.null(x$Forecasts_Test))
+  if(is.null(x$Forecasts_Test)||is.null(x$Actual_Test))
     stop("Rolling Forecast Combination requires input to include a full test set", call. = FALSE)
 
   meth<-match.fun(comb_method)
