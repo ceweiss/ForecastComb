@@ -41,7 +41,8 @@ summary.foreccomb_res <- function(object, ...) {
 
     ans$Method <- object$Method
 
-    if(is.null(dim(object$Weights))){
+    if (!is.character(object$Weights)) {
+      if(is.null(dim(object$Weights))){
         ans$weight <- matrix(object$Weights, ncol = 1)
         colnames(ans$weight) <- "Combination Weight"
         rownames(ans$weight) <- object$Models
