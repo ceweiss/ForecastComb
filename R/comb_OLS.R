@@ -3,8 +3,8 @@
 #' @description Computes forecast combination weights using ordinary least squares (OLS) regression.
 #'
 #' @details
-#' The function is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
-#' \emph{ForecastCombinations} package.
+#' The function integrates the ordinary least squares (OLS) forecast combination implementation of the
+#' \emph{ForecastCombinations} packages into GeomComb. The implementation has improved robustness regarding multicollinearity.
 #'
 #' The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
 #' estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of
@@ -63,7 +63,7 @@
 #'
 #' @keywords models
 #'
-#' @import forecast ForecastCombinations
+#' @import forecast
 #'
 #' @export
 comb_OLS <- function(x) {
@@ -72,12 +72,12 @@ comb_OLS <- function(x) {
     observed_vector <- x$Actual_Train
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
-
-    regression <- Forecast_comb(observed_vector, prediction_matrix, Averaging_scheme = "ols")
-
-    weights <- regression$weights[2:length(regression$weights)]
-    intercept <- regression$weights[1]
-    fitted <- as.vector(regression$fitted[, 1])
+    
+    lin_model <- lm(observed_vector ~ prediction_matrix)
+  
+    weights <- lin_model$coef[-1]
+    intercept <- lin_model$coef[1]
+    fitted <- unname(fitted(lin_model))
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
@@ -88,8 +88,7 @@ comb_OLS <- function(x) {
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
-        regression_aux <- Forecast_comb(observed_vector, prediction_matrix, fhat_new = newpred_matrix, Averaging_scheme = "ols")
-        pred <- as.vector(regression_aux$pred[, 1])
+        pred <- as.vector(lin_model$coef %*% t(cbind(1, newpred_matrix)))
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Ordinary Least Squares Regression", Models = modelnames, Weights = weights, Intercept = intercept, Fitted = fitted, Accuracy_Train = accuracy_insample,
                 Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))

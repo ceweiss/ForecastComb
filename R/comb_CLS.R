@@ -3,8 +3,8 @@
 #' @description Computes forecast combination weights using constrained least squares (CLS) regression.
 #'
 #' @details
-#' The function is integrates the constrained least squares (CLS) forecast combination implementation of the
-#' \emph{ForecastCombinations} packages. The implementation has improved robustness regarding multicollinearity.
+#' The function integrates the constrained least squares (CLS) forecast combination implementation of the
+#' \emph{ForecastCombinations} packages into GeomComb. The implementation has improved robustness regarding multicollinearity.
 #'
 #' Compared to the \code{\link[=comb_OLS]{ordinary least squares forecast combination}} method, CLS forecast combination has the additional
 #' requirement that the weights, \eqn{\mathbf{w}^{CLS} = (w_1, \ldots, w_N)'}, sum up to 1 and that there is no intercept. That is,
@@ -74,10 +74,7 @@ comb_CLS <- function(x) {
     prediction_matrix <- x$Forecasts_Train
     modelnames <- x$modelnames
 
-    mat_err <- observed_vector - prediction_matrix
-    TT <- NROW(prediction_matrix)
     p <- NCOL(prediction_matrix)
-    pred <- NULL
     
     Rinv <- solve(safe_chol(t(prediction_matrix) %*% prediction_matrix))
     C <- cbind(rep(1, p), diag(p))
@@ -87,7 +84,6 @@ comb_CLS <- function(x) {
     weights = qp1$sol
 
     fitted <- as.vector(weights %*% t(prediction_matrix))
-    
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {

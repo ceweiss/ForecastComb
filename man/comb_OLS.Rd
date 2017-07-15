@@ -25,8 +25,8 @@ Returns an object of class \code{foreccomb_res} with the following components:
 Computes forecast combination weights using ordinary least squares (OLS) regression.
 }
 \details{
-The function is a wrapper around the ordinary least squares (OLS) forecast combination implementation of the
-\emph{ForecastCombinations} package.
+The function integrates the ordinary least squares (OLS) forecast combination implementation of the
+\emph{ForecastCombinations} packages into GeomComb. The implementation has improved robustness regarding multicollinearity.
 
 The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
 estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of
