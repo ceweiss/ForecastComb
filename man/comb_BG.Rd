@@ -29,7 +29,7 @@ elements of the estimated mean squared prediction error matrix in order to compu
 
 \deqn{w_i^{BG} = \frac{\hat{\sigma}^{-2} (i)}{\Sigma_{j=1}^N  \hat{\sigma}^{-2} (j)}}{w_i = \hat{\sigma}^{-2} (i) / \Sigma_{j=1}^N  \hat{\sigma}^{-2} (j)}
 
-where \eqn{\hat{\sigma}^{2} (i)} is the estimated mean squared prediction error of the i-th model.
+where \eqn{\hat{\sigma}^{-2} (i)} is the estimated mean squared prediction error of the i-th model.
 
 The combined forecast is then obtained by:
 

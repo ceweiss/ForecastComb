@@ -62,7 +62,7 @@ ERLS and NRLS Combination Forecasts. \emph{International Journal of Forecasting}
 
 Granger, C., and Ramanathan, R. (1984). Improved Methods Of Combining Forecasts. \emph{Journal of Forecasting}, \bold{3(2)}, 197--204.
 
-Nowotarski, J., Raviv, E., Trueck, S., and Weron, R. (2014). An Empirical Comparison of Alternative
+Nowotarski, J., Raviv, E., Tr\"uck, S., and Weron, R. (2014). An Empirical Comparison of Alternative
 Schemes for Combining Electricity Spot Price Forecasts. \emph{Energy Economics}, \bold{46}, 395--412.
 }
 \seealso{
@@ -73,3 +73,4 @@ Schemes for Combining Electricity Spot Price Forecasts. \emph{Energy Economics},
 \code{\link[forecast]{accuracy}}
 }
 \keyword{models}
+

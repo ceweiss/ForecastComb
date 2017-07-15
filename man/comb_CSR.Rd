@@ -2,7 +2,7 @@
 % Please edit documentation in R/comb_CSR.R
 \name{comb_CSR}
 \alias{comb_CSR}
-\title{Complete Subset Regression Forecast Combination}
+\title{All Possible Combinations Forecast Averaging}
 \usage{
 comb_CSR(x)
 }
@@ -21,8 +21,7 @@ Returns an object of class \code{foreccomb_res} with the following components:
 \item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
-Combine different forecasts using complete subset regressions. Apart from the simple averaging, weights based on information criteria (AIC, corrected AIC, Hannan Quinn and BIC)
-can be used.
+Combine different forecasts using complete subset regressions. Apart from the simple averaging, weights based on information criteria (AIC, corrected AIC, Hannan Quinn and BIC).
 }
 \details{
 OLS forecast combination is based on \deqn{ obs_t = const + \sum_{i = 1}^p w_{i} \widehat{obs}_{it} + e_t, } where \eqn{obs} is the observed values and \eqn{\widehat{obs}} is the forecast, one out of the \eqn{p} forecasts available.
@@ -32,6 +31,8 @@ The function computes the complete subset regressions. So a matrix of forecasts 
 Those forecasts can later be cross-sectionally averaged (averaged over rows) to create a single combined forecast using weights which are based on the information criteria of the different individual regression, rather than a simple average.
 
 Additional weight-vectors which are based on different information criteria are also returned. This is in case the user would like to perform the frequensit version of forecast averaging (see references for more details).
+
+Although the function is geared towards forecast averaging, it can be used in any other application as a generic complete subset regression.
 }
 \examples{
 obs <- rnorm(100)
@@ -56,7 +57,7 @@ Kapetanios, G., Labhard V., Price, S. (2008). Forecasting Using Bayesian and Inf
 
 Koenker R. (2005). \emph{Quantile Regression. Cambridge University Press}.
 
-Graham, E., Garganob, A., Timmermann, A. (2013). Complete subset regressions.
+Graham, E., Garganob, A., Timmermann, A. (2013). Complete subset regressions. 
 \emph{Journal of Econometrics}, \bold{177(2)}, 357--373.
 }
 \seealso{
