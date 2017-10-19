@@ -3,9 +3,9 @@
 
 [![Build Status](https://img.shields.io/travis/ceweiss/GeomComb/master.svg)](https://travis-ci.org/ceweiss/GeomComb)
 [![Build_Note](http://www.r-pkg.org/badges/version/GeomComb)](https://cran.r-project.org/package=GeomComb)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/GeomComb)](https://cran.r-project.org/package=GeomComb)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ForecastCombinations)](https://cran.r-project.org/package=GeomCombination)
 
-The R package *ForecastComb* is a merge of the packages *ForecastCombination* and *GeomComb* and presents functions to pool individual model forecasts using geometric (eigenvector-based) forecast combination methods. The package
+The R package *ForecastComb* is a merge of the packages *ForecastCombinations* and *GeomComb* and presents functions to pool individual model forecasts using geometric (eigenvector-based) forecast combination methods. The package
 also provides functions for simple forecast combination methods (inverse rank
 approach, simple average, median, trimmed mean, and winsorized mean - including 
 the option of a criterion-based optimisation of the trimming factor) and 
