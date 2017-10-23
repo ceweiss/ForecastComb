@@ -55,9 +55,9 @@
 #' @seealso
 #' \code{\link{comb_EIG2}}
 #' \code{\link{comb_EIG3}}
-#' \code{\link[GeomComb]{foreccomb}},
-#' \code{\link[GeomComb]{plot.foreccomb_res}},
-#' \code{\link[GeomComb]{summary.foreccomb_res}},
+#' \code{\link[ForecastComb]{foreccomb}},
+#' \code{\link[ForecastComb]{plot.foreccomb_res}},
+#' \code{\link[ForecastComb]{summary.foreccomb_res}},
 #' \code{\link[forecast]{accuracy}}
 #'
 #' @references

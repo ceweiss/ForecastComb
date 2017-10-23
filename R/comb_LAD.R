@@ -4,7 +4,7 @@
 #'
 #' @details
 #' The function integrates the least absolute deviation (LAD) forecast combination implementation of the
-#' \emph{ForecastCombinations} package into GeomComb.
+#' \emph{ForecastCombinations} package into ForecastComb.
 #'
 #' The defining property of \code{comb_LAD} is that it does not minimize the squared error loss like \code{\link{comb_OLS}} and
 #' \code{\link{comb_CLS}}, but the absolute values of the errors. This makes the method more robust to outliers -- \code{comb_LAD}

@@ -26,7 +26,7 @@ Computes forecast combination weights using ordinary least squares (OLS) regress
 }
 \details{
 The function integrates the ordinary least squares (OLS) forecast combination implementation of the
-\emph{ForecastCombinations} package into GeomComb.
+\emph{ForecastCombinations} package into ForecastComb.
 
 The OLS combination method (Granger and Ramanathan (1984)) uses ordinary least squares to
 estimate the weights, \eqn{\mathbf{w}^{OLS} = (w_1, \ldots, w_N)'}, as well as an intercept, \eqn{b}, for the combination of

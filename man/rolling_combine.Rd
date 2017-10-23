@@ -26,7 +26,7 @@ Returns an object of class \code{foreccomb_res} that represents the results for 
 \item{Input_Data}{Returns the data forwarded to the method.}
 }
 \description{
-Computes the dynamic version of the combined forecast for a method included in the GeomComb package.
+Computes the dynamic version of the combined forecast for a method included in the ForecastComb package.
 }
 \details{
 The function \code{rolling_combine} allows to estimate a dynamic version of the other combination methods of the package in a

@@ -1,4 +1,4 @@
 require(testthat)
-require(GeomComb)
+require(ForecastComb)
 
-test_check("GeomComb")
+test_check("ForecastComb")

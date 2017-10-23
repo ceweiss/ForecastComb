@@ -1,16 +1,12 @@
-# GeomComb
->(Geometric) Forecast Combination in R
+# ForecastComb
+>Forecast Combination in R
 
-[![Build Status](https://img.shields.io/travis/ceweiss/GeomComb/master.svg)](https://travis-ci.org/ceweiss/GeomComb)
-[![Build_Note](http://www.r-pkg.org/badges/version/GeomComb)](https://cran.r-project.org/package=GeomComb)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/GeomComb)](https://cran.r-project.org/package=GeomComb)
+[![Build Status](https://img.shields.io/travis/ceweiss/ForecastComb/master.svg)](https://travis-ci.org/ceweiss/ForecastComb)
+[![Build_Note](http://www.r-pkg.org/badges/version/ForecastComb)](https://cran.r-project.org/package=ForecastComb)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ForecastComb)](https://cran.r-project.org/package=ForecastComb)
 
-The R package *GeomComb* presents functions to pool individual model forecasts
-using geometric (eigenvector-based) forecast combination methods. The package
-also provides functions for simple forecast combination methods (inverse rank
-approach, simple average, median, trimmed mean, and winsorized mean - including 
-the option of a criterion-based optimisation of the trimming factor) and 
-regression-based forecast combination methods.
+The R package *ForecastComb*  presents functions to pool individual model forecasts
+using geometric- and regression-based forecast combination methods.  *ForecastComb* combines the functionality of the packages *ForecastCombinations* and *GeomComb* under a unified user interface and convenience functions.
 
 The forecast combination methods allow for 3 different input types:
 
@@ -28,18 +24,18 @@ the training set.
 ## Installation
 Get started by installing the [R software](https://www.r-project.org/) for statistical computing.
 
-You can install the **stable** version on [CRAN](https://cran.r-project.org/package=GeomComb):
+You can install the **stable** version on [CRAN](https://cran.r-project.org/package=ForecastComb):
 
 ```s
-install.packages('GeomComb', dependencies = TRUE)
+install.packages('ForecastComb', dependencies = TRUE)
 ```
 
 You can also install the **development** version from
-[Github](https://github.com/ceweiss/GeomComb)
+[Github](https://github.com/ceweiss/ForecastComb)
 
 ```s
 # install.packages("devtools")
-devtools::install_github("ceweiss/GeomComb")
+devtools::install_github("ceweiss/ForecastComb")
 ```
 
 ## License

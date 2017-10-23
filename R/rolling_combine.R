@@ -1,6 +1,6 @@
 #' @title Dynamic Forecast Combination
 #'
-#' @description Computes the dynamic version of the combined forecast for a method included in the GeomComb package.
+#' @description Computes the dynamic version of the combined forecast for a method included in the ForecastComb package.
 #'
 #' @details
 #'
@@ -76,7 +76,7 @@ rolling_combine<-function(x, comb_method, criterion=NULL){
 
   if(!sum(comb_method==c("comb_BG", "comb_CLS", "comb_CSR", "comb_EIG1", "comb_EIG2", "comb_EIG3", "comb_EIG4",
                         "comb_InvW", "comb_LAD", "comb_MED", "comb_NG", "comb_OLS", "comb_SA", "comb_TA", "comb_WA"))==1)
-     stop("Please choose one combination method from the GeomComb package.", call. = FALSE)
+     stop("Please choose one combination method from the ForecastComb package.", call. = FALSE)
 
   if(comb_method=="comb_CSR")
     stop("Rolling Forecast Combination method is not available for Complete Subset Regression.", call. = FALSE)

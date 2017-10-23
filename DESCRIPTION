@@ -1,4 +1,4 @@
-Package: GeomComb
+Package: ForecastComb
 Type: Package
 Title: (Geometric) Forecast Combination Methods
 Version: 1.1
@@ -21,8 +21,8 @@ Description: Provides eigenvector-based (geometric) forecast
     median, trimmed and winsorized mean, inverse rank method) and regression-based
     combination. Tools for data pre-processing are available in order to deal with 
     common problems in forecast combination (missingness, collinearity).
-URL: https://github.com/ceweiss/GeomComb
-BugReports: https://github.com/ceweiss/GeomComb/issues
+URL: https://github.com/ceweiss/ForecastComb
+BugReports: https://github.com/ceweiss/ForecastComb/issues
 License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 5.0.1

@@ -38,7 +38,7 @@ plot(fit)
 Christoph E. Weiss and Gernot R. Roetzer
 }
 \seealso{
-\code{\link[GeomComb]{foreccomb}},
-\code{\link[GeomComb]{summary.foreccomb_res}}
+\code{\link[ForecastComb]{foreccomb}},
+\code{\link[ForecastComb]{summary.foreccomb_res}}
 }
 

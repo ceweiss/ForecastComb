@@ -23,8 +23,8 @@
 #' summary(fit)
 #'
 #' @seealso
-#' \code{\link[GeomComb]{foreccomb}},
-#' \code{\link[GeomComb]{plot.foreccomb_res}},
+#' \code{\link[ForecastComb]{foreccomb}},
+#' \code{\link[ForecastComb]{plot.foreccomb_res}},
 #'
 #' @author Christoph E. Weiss and Gernot R. Roetzer
 #'
