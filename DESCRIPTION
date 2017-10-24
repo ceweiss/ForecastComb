@@ -1,6 +1,6 @@
 Package: ForecastComb
 Type: Package
-Title: (Geometric) Forecast Combination Methods
+Title: Forecast Combination Methods
 Version: 1.1
 Depends:
     R (>= 3.0.2)
@@ -16,10 +16,9 @@ Suggests:
     testthat (>= 1.0.2)
 Author: Christoph E. Weiss, Gernot R. Roetzer, Eran Raviv 
 Maintainer: Christoph E. Weiss <info@ceweiss.com>
-Description: Provides eigenvector-based (geometric) forecast
+Description: Provides geometric- and regression-based forecast
     combination methods; also includes simple approaches (simple average,
-    median, trimmed and winsorized mean, inverse rank method) and regression-based
-    combination. Tools for data pre-processing are available in order to deal with 
+    median, trimmed and winsorized mean, inverse rank method). Tools for data pre-processing are available in order to deal with 
     common problems in forecast combination (missingness, collinearity).
 URL: https://github.com/ceweiss/ForecastComb
 BugReports: https://github.com/ceweiss/ForecastComb/issues
