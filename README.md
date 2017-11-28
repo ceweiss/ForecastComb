@@ -3,7 +3,7 @@
 
 [![Build Status](https://img.shields.io/travis/ceweiss/ForecastComb/master.svg)](https://travis-ci.org/ceweiss/ForecastComb)
 [![Build_Note](http://www.r-pkg.org/badges/version/ForecastComb)](https://cran.r-project.org/package=ForecastComb)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ForecastComb)](https://cran.r-project.org/package=ForecastComb)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/ForecastCombinations)](https://cran.r-project.org/package=ForecastComb)
 
 The R package *ForecastComb*  presents functions to pool individual model forecasts
 using geometric- and regression-based forecast combination methods.  *ForecastComb* combines the functionality of the packages *ForecastCombinations* and *GeomComb* under a unified user interface and convenience functions.
