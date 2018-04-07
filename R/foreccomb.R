@@ -93,7 +93,7 @@ foreccomb <- function(observed_vector, prediction_matrix, newobs = NULL, newpred
         stop("The input for 'observed vector' appears to be multidimensional. Training set requires a vector of actual values.", call. = FALSE)
     if (!is.numeric(observed_vector))
         stop("Actual observations (Training Set) are not numeric.", call. = FALSE)
-    observed_vector <- as.vector(observed_vector)
+#    observed_vector <- as.vector(observed_vector)
     if (is.null(prediction_matrix))
         stop("Training set must contain matrix of individual predictions.", call. = FALSE)
     if (byrow==TRUE){

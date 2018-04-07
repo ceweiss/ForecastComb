@@ -53,3 +53,12 @@ test_that("Tests for valid training and test data sets", {
   all.equal(dim(testdata$Forecasts_Train), dim(train_p))
   all.equal(dim(testdata$Forecasts_Test), dim(test_p))
 })
+
+test_that("Fixed Bug - foreccomb is resetting the timestamp of the observation vector", {
+  train_o <- ts(1:10, start=5)
+  train_p <- ts(matrix(1:20, ncol = 2), start=5)
+  
+  data <- foreccomb(train_o, train_p)
+
+  all.equal(attributes(data$Actual_Train)$tsp, c(5, 14, 1))
+})
