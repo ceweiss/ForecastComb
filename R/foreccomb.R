@@ -106,7 +106,7 @@ foreccomb <- function(observed_vector, prediction_matrix, newobs = NULL, newpred
     if (!is.null(newpreds)) {
         if (byrow==TRUE){
           newpreds <- t(as.matrix(newpreds))
-        } else newpreds <- as.matrix(newpreds)
+        }
 
         if (ncol(prediction_matrix) != ncol(newpreds))
             stop("Test set predictions and training set predictions must contain same individual forecasts. Number of forecasts differ.", call. = FALSE)
@@ -143,7 +143,7 @@ foreccomb <- function(observed_vector, prediction_matrix, newobs = NULL, newpred
             message("A subset of the individual forecasts included NA values and has been removed.")
         }
     }
-    if (!is.null(newpreds)) newpreds <- newpreds[, pred_na]
+    if (!is.null(newpreds)) newpreds <- newpreds[, pred_na, drop=FALSE]
 
     if (nmodels <= 1L) {
         stop("Forecast combination methods require individual forecasts from at least 2 models.", call. = FALSE)

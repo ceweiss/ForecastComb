@@ -62,3 +62,12 @@ test_that("Fixed Bug - foreccomb is resetting the timestamp of the observation v
 
   all.equal(attributes(data$Actual_Train)$tsp, c(5, 14, 1))
 })
+
+test_that("Fixed Bug - foreccomb is converting newpreds internally to a vector", {
+  train_o <- ts(1:10)
+  train_p <- ts(matrix(1:20, ncol = 2))
+  test_p <- ts(matrix(c(1, 2), ncol = 2))
+  data <- foreccomb(train_o, train_p, newpreds = test_p)
+  
+  all.equal(attributes(data$Forecasts_Test)$dim, c(1, 2))
+})
