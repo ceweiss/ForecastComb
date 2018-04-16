@@ -36,7 +36,7 @@ test_that("Example run of auto_combine", {
   result<-auto_combine(data)
   
   expect_is(result, "foreccomb_res")
-  expect_length(result, 7)
+  expect_length(result, 8)
   expect_equal(as.vector(result$Accuracy_Train), 
                c(0.000000, 0.934598, 0.739543, 97.901652, 108.201288, 0.177286, 0.929727),
                tolerance = 1e-5, 

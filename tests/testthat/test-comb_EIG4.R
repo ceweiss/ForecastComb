@@ -40,7 +40,7 @@ test_that("Check for correct class type and accuracy, when only train set is use
   result<-comb_EIG4(data, criterion = "RMSE")
   
   expect_is(result, "foreccomb_res")
-  expect_length(result, 9)
+  expect_length(result, 10)
   expect_equal(as.vector(result$Accuracy_Train), 
                c(-2.633019e-17, 1.027065, 0.814063, 77.23214, 154.8389, 0.1654509, 0.9499373),
                tolerance = 1e-5, 
@@ -59,7 +59,7 @@ test_that( "Check for correct class type and accuracy, when Forecast_Test is pro
   result<-comb_EIG4(data, criterion = "RMSE")
   
   expect_is(result, "foreccomb_res")
-  expect_length(result, 10)
+  expect_length(result, 11)
   expect_equal(as.vector(result$Accuracy_Train), 
                c(-2.633019e-17, 1.027065, 0.814063, 77.23214, 154.8389, 0.1654509, 0.9499373),
                tolerance = 1e-5, 
@@ -79,9 +79,54 @@ test_that( "Check for correct class type and accuracy, when test set is used", {
   result<-comb_EIG4(data, criterion = "RMSE")
   
   expect_is(result, "foreccomb_res")
-  expect_length(result, 11)
+  expect_length(result, 12)
   expect_equal(as.vector(result$Accuracy_Test), 
                c(0.1179975, 0.9556236, 0.7895855, 229.546, 259.2487),
                tolerance = 1e-5, 
+               check.attributes = FALSE)
+})
+
+test_that( "Check for correct combination, when test set is used with the predict function (simplified)", {
+  set.seed(5)
+  obs <- rnorm(100)
+  preds <- matrix(rnorm(1000, 1), 100, 10)
+  train_o<-obs[1:80]
+  train_p<-preds[1:80,]
+  test_p<-preds[81:100,]
+
+  data<-foreccomb(train_o, train_p)
+  result<-comb_EIG4(data)
+
+  data2<-foreccomb(train_o, train_p, newpreds=test_p)
+  result2<-comb_EIG4(data2)
+
+  preds <- predict(result, test_p, simplify = TRUE)
+
+  expect_equal(as.vector(preds)[1:5],
+               result2$Forecasts_Test[1:5],
+               tolerance = 1e-5,
+               check.attributes = FALSE)
+
+})
+
+test_that( "Check for correct combination, when test set is used with the predict function (extend object)", {
+  set.seed(5)
+  obs <- rnorm(100)
+  preds <- matrix(rnorm(1000, 1), 100, 10)
+  train_o<-obs[1:80]
+  train_p<-preds[1:80,]
+  test_p<-preds[81:100,]
+
+  data<-foreccomb(train_o, train_p)
+  result<-comb_EIG4(data)
+
+  data2<-foreccomb(train_o, train_p, newpreds=test_p)
+  result2<-comb_EIG4(data2)
+
+  preds <- predict(result, test_p, simplify = FALSE)
+
+  expect_equal(as.vector(preds$Forecasts_Test)[1:5],
+               result2$Forecasts_Test[1:5],
+               tolerance = 1e-5,
                check.attributes = FALSE)
 })

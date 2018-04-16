@@ -110,7 +110,7 @@ comb_WA <- function(x, trim_factor = NULL, criterion = "RMSE") {
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
         result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_WA), class = c("foreccomb_res"))
         rownames(result$Accuracy_Train) <- "Training Set"
     }
 
@@ -119,17 +119,22 @@ comb_WA <- function(x, trim_factor = NULL, criterion = "RMSE") {
         pred <- apply(newpred_matrix, 1, function(x) winsor.mean(x, trim = trimf))
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_WA), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
             result <- structure(list(Method = "Winsorized Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
                 Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                  Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                  Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_WA), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
             rownames(result$Accuracy_Test) <- "Test Set"
         }
     }
     return(result)
+}
+
+predict.comb_WA <- function(object, newpreds) {
+  pred <- apply(newpreds, 1, function(y) winsor.mean(y, trim = object$Trim_Factor))
+  return(pred)
 }

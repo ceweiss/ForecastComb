@@ -125,7 +125,7 @@ comb_CSR <- function(x) {
   colnames(accuracy_insample) <- ic_name_vec
   if(!conduct_predict & is.null(x$Actual_Test)) {
     result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                             Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+                             Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_CSR), class = c("foreccomb_res"))
   }
   
   if(conduct_predict) {
@@ -133,7 +133,8 @@ comb_CSR <- function(x) {
     colnames(pred) <- ic_name_vec
     if(is.null(x$Actual_Test) == TRUE) {
       result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                               Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                               Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), 
+                               Predict = predict.comb_CSR), class = c("foreccomb_res"))
     } else {
       newobs_vector <- x$Actual_Test
       accuracy_outsample <- apply(pred, MARGIN = 2, FUN = accuracy, x = newobs_vector)[1:5,]
@@ -141,7 +142,7 @@ comb_CSR <- function(x) {
       colnames(accuracy_outsample) <- ic_name_vec
       result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
                                Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                                                                                                            Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                                                                                                            Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_CSR), class = c("foreccomb_res"))
     }
   }
   
@@ -170,4 +171,10 @@ comp_normalized_weights <- function(x) {
   x <- scale(unlist(x), scale = T)  # scaling is necessary to escape zero
   nominatorr <- exp(-0.5 * x)
   nominatorr/sum(nominatorr)
+}
+
+predict.comb_CSR <- function(object, newpreds) {
+  fobj <- foreccomb(object$Input_Data$Actual_Train, object$Input_Data$Forecasts_Train, newobs = NULL, newpreds = newpreds)
+  result <- comb_CSR(fobj)
+  return(result$Forecasts_Test)
 }

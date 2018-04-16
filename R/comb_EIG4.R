@@ -126,7 +126,7 @@ comb_EIG4 <- function(x, ntop_pred = NULL, criterion = "RMSE") {
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
         result <- structure(list(Method = "Trimmed Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = as.numeric(intercept), Weights = weights,
             Top_Predictors = ntop_pred, Ranking = unname(ranking), Fitted = fitted, Accuracy_Train = accuracy_insample, Input_Data = list(Actual_Train = x$Actual_Train,
-                Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+                Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_EIG4), class = c("foreccomb_res"))
         rownames(result$Accuracy_Train) <- "Training Set"
     }
 
@@ -136,15 +136,15 @@ comb_EIG4 <- function(x, ntop_pred = NULL, criterion = "RMSE") {
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Trimmed Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = as.numeric(intercept), Weights = weights,
                 Top_Predictors = ntop_pred, Ranking = unname(ranking), Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train,
-                  Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                  Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_EIG4), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
             result <- structure(list(Method = "Trimmed Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = as.numeric(intercept), Weights = weights,
                 Top_Predictors = ntop_pred, Ranking = unname(ranking), Fitted = fitted, Accuracy_Train = accuracy_insample, Forecasts_Test = pred, Accuracy_Test = accuracy_outsample,
-                Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test, Forecasts_Test = x$Forecasts_Test)),
-                class = c("foreccomb_res"))
+                Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test, Forecasts_Test = x$Forecasts_Test),
+                Predict = predict.comb_EIG4), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
             rownames(result$Accuracy_Test) <- "Test Set"
         }
@@ -175,4 +175,9 @@ comp.EIG4 <- function(observed_vector, prediction_matrix, ntop_pred) {
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     return(list(intercept = intercept, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample, ranking = ranking))
+}
+
+predict.comb_EIG4 <- function(x, newpreds) {
+  pred <- as.vector(as.vector(x$Intercept) + newpreds %*% x$Weights)
+  return(pred)
 }

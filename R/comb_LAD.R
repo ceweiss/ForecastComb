@@ -74,7 +74,7 @@ comb_LAD <- function(x) {
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
         result <- structure(list(Method = "Robust Regression (QR)", Models = modelnames, Weights = weights, Intercept = intercept, Fitted = fitted, Accuracy_Train = accuracy_insample,
-            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_LAD), class = c("foreccomb_res"))
         rownames(result$Accuracy_Train) <- "Training Set"
     }
 
@@ -83,17 +83,24 @@ comb_LAD <- function(x) {
         pred <- as.vector(rq_model$coef %*% t(cbind(1, newpred_matrix)))
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Robust Regression (QR)", Models = modelnames, Weights = weights, Intercept = intercept, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_LAD), 
+                class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
             result <- structure(list(Method = "Robust Regression (QR)", Models = modelnames, Weights = weights, Intercept = intercept, Fitted = fitted, Accuracy_Train = accuracy_insample,
                 Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                  Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                  Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_LAD), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
             rownames(result$Accuracy_Test) <- "Test Set"
         }
     }
     return(result)
+}
+
+predict.comb_LAD <- function(x, newpreds) {
+  coef <- c(x$Intercept, x$Weights)
+  pred <- as.vector(coef %*% t(cbind(1, newpreds)))
+  return(pred)
 }

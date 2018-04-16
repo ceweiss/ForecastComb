@@ -90,7 +90,7 @@ comb_EIG2 <- function(x) {
     accuracy_insample <- accuracy(fitted, observed_vector)
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
         result <- structure(list(Method = "Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = intercept, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
+            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_EIG2), class = c("foreccomb_res"))
         rownames(result$Accuracy_Train) <- "Training Set"
     }
 
@@ -99,19 +99,24 @@ comb_EIG2 <- function(x) {
         pred <- as.vector(as.vector(intercept) + newpred_matrix %*% weights)
         if (is.null(x$Actual_Test) == TRUE) {
             result <- structure(list(Method = "Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = intercept, Weights = weights, Fitted = fitted,
-                Accuracy_Train = accuracy_insample, Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)),
-                class = c("foreccomb_res"))
+                Accuracy_Train = accuracy_insample, Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), 
+                Predict = predict.comb_EIG2), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
             result <- structure(list(Method = "Bias-Corrected Eigenvector Approach", Models = modelnames, Intercept = intercept, Weights = weights, Fitted = fitted,
                 Accuracy_Train = accuracy_insample, Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train,
-                  Actual_Test = x$Actual_Test, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
+                  Actual_Test = x$Actual_Test, Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_EIG2), class = c("foreccomb_res"))
             rownames(result$Accuracy_Train) <- "Training Set"
             rownames(result$Accuracy_Test) <- "Test Set"
         }
     }
 
     return(result)
+}
+
+predict.comb_EIG2 <- function(object, newpreds) {
+  pred <- as.vector(object$Intercept + newpreds %*% object$Weights)
+  return(pred)
 }

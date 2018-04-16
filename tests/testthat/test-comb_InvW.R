@@ -66,3 +66,48 @@ test_that( "Check for correct class type and accuracy, when test set is used", {
                tolerance = 1e-5, 
                check.attributes = FALSE)
 })
+
+test_that( "Check for correct combination, when test set is used with the predict function (simplified)", {
+  set.seed(5)
+  obs <- rnorm(100)
+  preds <- matrix(rnorm(1000, 1), 100, 10)
+  train_o<-obs[1:80]
+  train_p<-preds[1:80,]
+  test_p<-preds[81:100,]
+  
+  data<-foreccomb(train_o, train_p)
+  result<-comb_InvW(data)
+  
+  data2<-foreccomb(train_o, train_p, newpreds=test_p)
+  result2<-comb_InvW(data2)
+  
+  preds <- predict(result, test_p, simplify = TRUE)
+  
+  expect_equal(as.vector(preds)[1:5], 
+               result2$Forecasts_Test[1:5],
+               tolerance = 1e-5, 
+               check.attributes = FALSE)
+  
+})
+
+test_that( "Check for correct combination, when test set is used with the predict function (extend object)", {
+  set.seed(5)
+  obs <- rnorm(100)
+  preds <- matrix(rnorm(1000, 1), 100, 10)
+  train_o<-obs[1:80]
+  train_p<-preds[1:80,]
+  test_p<-preds[81:100,]
+  
+  data<-foreccomb(train_o, train_p)
+  result<-comb_InvW(data)
+  
+  data2<-foreccomb(train_o, train_p, newpreds=test_p)
+  result2<-comb_InvW(data2)
+  
+  preds <- predict(result, test_p, simplify = FALSE)
+  
+  expect_equal(as.vector(preds$Forecasts_Test)[1:5], 
+               result2$Forecasts_Test[1:5],
+               tolerance = 1e-5, 
+               check.attributes = FALSE)
+})
