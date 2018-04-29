@@ -1,6 +1,3 @@
-#' @import forecast
-#'
-#' @export
 predict.foreccomb_res <- function(object, newpreds, newobs = NULL, simplify=TRUE, byrow=FALSE, ...) {
  
   if (!is.null(newpreds)) {
@@ -23,8 +20,6 @@ predict.foreccomb_res <- function(object, newpreds, newobs = NULL, simplify=TRUE
   if (!is.ts(newpreds)) {
     newpreds <- stats::ts(newpreds)
   }
-  
-  ## Return Clean Data (can be used for forecast combinations)---------------------------------------
 
   colnames(newpreds) <- colnames(object$Input_Data$Forecasts_Train)
   
