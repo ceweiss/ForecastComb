@@ -197,7 +197,7 @@ foreccomb <- function(observed_vector, prediction_matrix, newobs = NULL, newpred
                   stop("Actual values (Test Set) are not numeric.", call. = FALSE)
                 if (sum(is.na(newobs)) > 0)
                   stop("Actual values (Test Set) must not contain missing values.", call. = FALSE)
-                newobs <- as.vector(newobs)
+
                 if (length(newobs) != nrow(newpreds))
                   stop("Lengths of actual values and prediction matrix do not coincide for test set.", call. = FALSE)
                 output <- structure(list(Actual_Train = observed_vector, Forecasts_Train = prediction_matrix, Actual_Test = newobs, Forecasts_Test = newpreds, nmodels = nmodels,
