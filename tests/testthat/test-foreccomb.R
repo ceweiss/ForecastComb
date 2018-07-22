@@ -30,8 +30,8 @@ test_that("Tests for valid training data set", {
                       c("Actual_Train", "Forecasts_Train", "nmodels", "modelnames"), 
                       check.attributes = FALSE)
   
-  all.equal(length(testdata$Actual_Train), length(train_o))
-  all.equal(dim(testdata$Forecasts_Train), dim(train_p))
+  expect_true(all.equal(length(testdata$Actual_Train), length(train_o)))
+  expect_true(all.equal(dim(testdata$Forecasts_Train), dim(train_p)))
 })
 
 test_that("Tests for valid training and test data sets", {
@@ -44,14 +44,14 @@ test_that("Tests for valid training and test data sets", {
   test_p<-preds[81:100,]
   
   testdata<-foreccomb(train_o, train_p, test_o, test_p)
-  all.equal.character(names(testdata),
+  expect_true(all.equal.character(names(testdata),
                       c("Actual_Train", "Forecasts_Train", "Actual_Test", "Forecasts_Test", "nmodels", "modelnames"), 
-                      check.attributes = FALSE)
+                      check.attributes = FALSE))
   
-  all.equal(length(testdata$Actual_Train), length(train_o))
-  all.equal(length(testdata$Actual_Test), length(test_o))
-  all.equal(dim(testdata$Forecasts_Train), dim(train_p))
-  all.equal(dim(testdata$Forecasts_Test), dim(test_p))
+  expect_true(all.equal(length(testdata$Actual_Train), length(train_o)))
+  expect_true(all.equal(length(testdata$Actual_Test), length(test_o)))
+  expect_true(all.equal(dim(testdata$Forecasts_Train), dim(train_p)))
+  expect_true(all.equal(dim(testdata$Forecasts_Test), dim(test_p)))
 })
 
 test_that("Fixed Bug - foreccomb is resetting the timestamp of the observation vector", {
@@ -60,7 +60,7 @@ test_that("Fixed Bug - foreccomb is resetting the timestamp of the observation v
   
   data <- foreccomb(train_o, train_p)
 
-  all.equal(attributes(data$Actual_Train)$tsp, c(5, 14, 1))
+  expect_true(all.equal(attributes(data$Actual_Train)$tsp, c(5, 14, 1)))
 })
 
 test_that("Fixed Bug - foreccomb is converting newpreds internally to a vector", {
@@ -69,5 +69,5 @@ test_that("Fixed Bug - foreccomb is converting newpreds internally to a vector",
   test_p <- ts(matrix(c(1, 2), ncol = 2))
   data <- foreccomb(train_o, train_p, newpreds = test_p)
   
-  all.equal(attributes(data$Forecasts_Test)$dim, c(1, 2))
+  expect_true(all.equal(attributes(data$Forecasts_Test)$dim, c(1, 2)))
 })
