@@ -8,7 +8,7 @@
 #' @param newpreds A matrix or multivariate time series; contains individual model forecasts if a test set is used (optional). Does not
 #' require specification of \code{newobs} -- in the case in which a forecaster only wants to train the forecast combination method
 #' with a training set and apply it to future individual model forecasts, only \code{newpreds} is required, not \code{newobs}.
-#' @simplify logical. The default (\code{TRUE}) returns the predictions separately. If set to (\code{FALSE}) the predictions are incorporated
+#' @param simplify logical. The default (\code{TRUE}) returns the predictions separately. If set to (\code{FALSE}) the predictions are incorporated
 #' into the foreccomb_res object, that is, the object is equal to the one that would have been obtained, if the new prediction set would have
 #' been provided when the forecast combination method was trained originally.
 #' @param byrow logical. The default (\code{FALSE}) assumes that each column of the forecast matrices (\code{prediction_matrix} and -- if
