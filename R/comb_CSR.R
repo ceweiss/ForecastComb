@@ -124,25 +124,24 @@ comb_CSR <- function(x) {
   rownames(accuracy_insample) <- c("ME", "RMSE", "MAE", "MPE", "MAPE")
   colnames(accuracy_insample) <- ic_name_vec
   if(!conduct_predict & is.null(x$Actual_Test)) {
-    result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                             Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_CSR), class = c("foreccomb_res"))
+    result <- foreccomb_res(method = "Complete Subset Regression", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                             input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), predict = predict.comb_CSR)
   }
   
   if(conduct_predict) {
     pred <- indiv_pred %*% weigths
     colnames(pred) <- ic_name_vec
     if(is.null(x$Actual_Test) == TRUE) {
-      result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                               Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), 
-                               Predict = predict.comb_CSR), class = c("foreccomb_res"))
+      result <- foreccomb_res(method = "Complete Subset Regression", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                              pred = pred, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), predict = predict.comb_CSR)
     } else {
       newobs_vector <- x$Actual_Test
       accuracy_outsample <- apply(pred, MARGIN = 2, FUN = accuracy, x = newobs_vector)[1:5,]
       rownames(accuracy_outsample) <- c("ME", "RMSE", "MAE", "MPE", "MAPE")
       colnames(accuracy_outsample) <- ic_name_vec
-      result <- structure(list(Method = "Standard Eigenvector Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                               Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                                                                                                            Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_CSR), class = c("foreccomb_res"))
+      result <- foreccomb_res(method = "Complete Subset Regression", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                              pred = pred, accuracy_outsample = accuracy_outsample, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                                             Forecasts_Test = x$Forecasts_Test), predict = predict.comb_CSR)
     }
   }
   

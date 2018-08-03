@@ -129,20 +129,14 @@ rolling_combine<-function(x, comb_method, criterion=NULL){
     accuracy_outsample<-accuracy(roll_forecast, new_obs)
 
     if(!is.null(intercept)){
-      result <- structure(list(Method = method, Models = models, Intercept = intercept, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                             Forecasts_Test = roll_forecast, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                                                                                                          Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
-      rownames(result$Accuracy_Train) <- "Training Set"
-      rownames(result$Accuracy_Test) <- "Test Set"
+      result <- foreccomb_res(method = method, modelnames = models, intercept = intercept, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                             pred = roll_forecast, accuracy_outsample = accuracy_outsample, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                                                                                          Forecasts_Test = x$Forecasts_Test), predict = model$predict)
     } else{
-      result <- structure(list(Method = method, Models = models, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                               Forecasts_Test = roll_forecast, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                                                                                                                     Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
-      rownames(result$Accuracy_Train) <- "Training Set"
-      rownames(result$Accuracy_Test) <- "Test Set"
+      result <- foreccomb_res(method = method, modelnames = models, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                              pred = roll_forecast, accuracy_outsample = accuracy_outsample, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                                                                                               Forecasts_Test = x$Forecasts_Test), predict = model$predict)
     }
 
     return(result)
 }
-
-

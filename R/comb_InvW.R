@@ -72,26 +72,22 @@ comb_InvW <- function(x) {
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
-        result <- structure(list(Method = "Inverse Ranking Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample, Input_Data = list(Actual_Train = x$Actual_Train,
-            Forecasts_Train = x$Forecasts_Train)), class = c("foreccomb_res"))
-        rownames(result$Accuracy_Train) <- "Training Set"
+      result <- foreccomb_res(method = "Inverse Ranking Approach", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                              input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train))
     }
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
         pred <- as.vector(newpred_matrix %*% weights)
         if (is.null(x$Actual_Test) == TRUE) {
-            result <- structure(list(Method = "Inverse Ranking Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
-            rownames(result$Accuracy_Train) <- "Training Set"
+          result <- foreccomb_res(method = "Inverse Ranking Approach", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                                  pred = pred, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test))
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
-            result <- structure(list(Method = "Inverse Ranking Approach", Models = modelnames, Weights = weights, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                  Forecasts_Test = x$Forecasts_Test)), class = c("foreccomb_res"))
-            rownames(result$Accuracy_Train) <- "Training Set"
-            rownames(result$Accuracy_Test) <- "Test Set"
+            result <- foreccomb_res(method = "Inverse Ranking Approach", modelnames = modelnames, weights = weights, fitted = fitted, accuracy_insample = accuracy_insample,
+                                    pred = pred, accuracy_outsample = accuracy_outsample, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                    Forecasts_Test = x$Forecasts_Test))
         }
     }
     return(result)

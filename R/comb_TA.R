@@ -118,27 +118,22 @@ comb_TA <- function(x, trim_factor = NULL, criterion = "RMSE") {
     accuracy_insample <- accuracy(fitted, observed_vector)
 
     if (is.null(x$Forecasts_Test) & is.null(x$Actual_Test)) {
-        result <- structure(list(Method = "Trimmed Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-            Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), Predict = predict.comb_TA), class = c("foreccomb_res"))
-        rownames(result$Accuracy_Train) <- "Training Set"
+        result <- foreccomb_res(method = "Trimmed Mean", modelnames = modelnames, weights = weights, trim_factor = trimf, fitted = fitted, accuracy_insample = accuracy_insample,
+            input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train), predict = predict.comb_TA)
     }
 
     if (is.null(x$Forecasts_Test) == FALSE) {
         newpred_matrix <- x$Forecasts_Test
         pred <- apply(newpred_matrix, 1, function(x) mean(x, trim = trimf))
         if (is.null(x$Actual_Test) == TRUE) {
-            result <- structure(list(Method = "Trimmed Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), 
-                Predict = predict.comb_TA), class = c("foreccomb_res"))
-            rownames(result$Accuracy_Train) <- "Training Set"
+          result <- foreccomb_res(method = "Trimmed Mean", modelnames = modelnames, weights = weights, trim_factor = trimf, fitted = fitted, accuracy_insample = accuracy_insample,
+                                  pred = pred, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Forecasts_Test = x$Forecasts_Test), predict = predict.comb_TA) 
         } else {
             newobs_vector <- x$Actual_Test
             accuracy_outsample <- accuracy(pred, newobs_vector)
-            result <- structure(list(Method = "Trimmed Mean", Models = modelnames, Weights = weights, Trim_Factor = trimf, Fitted = fitted, Accuracy_Train = accuracy_insample,
-                Forecasts_Test = pred, Accuracy_Test = accuracy_outsample, Input_Data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
-                  Forecasts_Test = x$Forecasts_Test), Predict = predict.comb_TA), class = c("foreccomb_res"))
-            rownames(result$Accuracy_Train) <- "Training Set"
-            rownames(result$Accuracy_Test) <- "Test Set"
+            result <- foreccomb_res(method = "Trimmed Mean", modelnames = modelnames, weights = weights, trim_factor = trimf, fitted = fitted, accuracy_insample = accuracy_insample,
+                                    pred = pred, accuracy_outsample = accuracy_outsample, input_data = list(Actual_Train = x$Actual_Train, Forecasts_Train = x$Forecasts_Train, Actual_Test = x$Actual_Test,
+                                                                                                            Forecasts_Test = x$Forecasts_Test), predict = predict.comb_TA)
         }
     }
     return(result)
