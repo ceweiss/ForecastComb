@@ -30,6 +30,19 @@ one forecast model, set to \code{TRUE}.}
 \code{prediction} method for class \sQuote{foreccomb_res}. Uses the previously created forecast combination
 result to predict the combination for a newly provided prediction dataset.
 }
+\examples{
+obs <- rnorm(100)
+preds <- matrix(rnorm(1000, 1), 100, 10)
+train_o<-obs[1:80]
+train_p<-preds[1:80,]
+test_o<-obs[81:100]
+test_p<-preds[81:100,]
+
+data<-foreccomb(train_o, train_p)
+fit<-comb_BG(data)
+predict(fit, test_p)
+
+}
 \author{
 Christoph E. Weiss and Gernot R. Roetzer
 }

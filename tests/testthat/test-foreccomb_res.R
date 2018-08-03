@@ -12,13 +12,16 @@ test_that("Tests that time series input leads to time series output", {
   fitted <- rnorm(80)
   
   test_o <- ts(obs[81:100], start = 2008, frequency = 4)
-
   test_p <- ts(preds[81:100,], start = 2008, frequency = 4)
+  pred <- rnorm(20)
 
-  fcc_res <-foreccomb_res(method = "test", modelnames = c("test_1", "test_2"), fitted = fitted,
+  fcc_res <-foreccomb_res(method = "test", modelnames = c("test_1", "test_2"), fitted = fitted, pred = pred,
                           accuracy_insample = matrix(c(50, 50), ncol = 2), input_data = list(Actual_Train = train_o,
                           Forecasts_Train = train_p, Actual_Test = test_o, Forecasts_Test = test_p))
   
   expect_true(all(attributes(fcc_res$Fitted)$tsp == attributes(train_o)$tsp))
+  expect_true(all(attributes(fcc_res$Forecasts_Test)$tsp == attributes(test_o)$tsp))
+  
   expect_true(all(as.vector(fcc_res$Fitted) == fitted))
+  expect_true(all(as.vector(fcc_res$Forecasts_Test) == pred))
 })
